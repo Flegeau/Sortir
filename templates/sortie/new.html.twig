@@ -1,11 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Sortie{% endblock %}
+{% block title %}Sortie{% endblock %}
 
 {% block body %}
-    <h1>Create new Sortie</h1>
+    <h1>Créer une sortie</h1>
 
     {{ include('sortie/_form.html.twig') }}
 
     <a href="{{ path('app_sortie_index') }}">back to list</a>
+{% endblock %}
+
+{% block javascripts %}
+    {# Mettre dans un fichier sous public/js une fois fonctionnel #}
+    <script type="text/javascript">
+        (function (){
+            //dateJour();
+            //afficherInfosLieu();
+            //afficherInfosVille();
+        })();
+
+        function dateJour() {
+            let dateJour = new Date();
+            let elemDateDebut = document.getElementById('sortie_dateHeureDebut');
+            //let elemDateFin = document.getElementById('sortie_dateLimiteInscription');
+            elemDateDebut.setAttribute('value', dateJour);
+            elemDateDebut.setAttribute('min', dateJour);
+            console.log(dateJour);
+        }
+
+        function afficherInfosLieu() {
+            //let elemLieu = document.getElementById('sortie_lieu');
+            //let rue = elemLieu['rue'];
+            //let latitude = elemLieu['latitude'];
+            //let longitude = elemLieu['longitude'];
+        }
+
+        function afficherInfosVille() {
+            //let elemVille = document.getElementById('sortie_ville');
+            //let codePostal = elemVille['codePostal'];
+        }
+    </script>
 {% endblock %}
