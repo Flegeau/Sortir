@@ -53,6 +53,7 @@ class Sortie
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'sortieOrganisateur')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Participant $organisateur = null;
 
     public function __construct()
@@ -223,4 +224,5 @@ class Sortie
 
         return $this;
     }
+
 }
