@@ -1,0 +1,90 @@
+{% set organisateur = null %}
+{% set sorties = sorties %}
+{% set campus = campus  %}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortie{% endblock %}
+
+{% block body %}
+    <div class="row text-center mt-5">
+        <h3>Filtrer les sorties</h3>
+    </div>
+    <div class="row mt-5">
+        <div class="col-8 offset-2">
+            <label>Campus</label>
+            <input type="text" name="campus" list="campusname">
+                <datalist id="campusname">
+                    {% for key,campusName in campus %}
+                        <option value="{{ campusName.nom }}">
+                    {% endfor %}
+                </datalist>
+        </div>
+        <div class="col-8 offset-2">
+            <label>Le nom de la sortie contient:</label>
+            <input type="search" name="sortiename" id="sortie">
+        </div>
+        <div class="col-8 offset-2">
+            <label>Entre</label>
+            <input type="date" name="datestart" id="datestart">
+            <label>Et</label>
+            <input type="date" name="dateend" id="dateend">
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-8 offset-2">
+            <div>
+                <input type="checkbox" name="organisateur">
+                <label>Sortie dont  je suis l'organisateur/trice</label>
+            </div>
+            <div>
+                <input type="checkbox" name="inscrit">
+                <label>Sortie auxquelles je suis inscrit/e</label>
+            </div>
+            <div>
+                <input type="checkbox" name="non-inscrit">
+                <label>Sortie auxquelles je ne suis pas inscrit/e</label>
+            </div>
+            <div>
+                <input type="checkbox" name="passees">
+                <label>Sortie passées</label>
+            </div>
+        </div>
+        <div class="col-8 offset-2">
+            <button type="submit">Recherche</button>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-6 offset-3">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Nom de la sortie</th>
+                    <th scope="col">Date de la sortie</th>
+                    <th scope="col">Clôture</th>
+                    <th scope="col">inscrits/places</th>
+                    <th scope="col">Etat</th>
+                    <th scope="col">Inscrit</th>
+                    <th scope="col">Organisateur</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key,sortie in sorties %}
+                    <tr>
+                        <td>{{ sortie.nom }}</td>
+                        <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
+                        <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
+                        <td>{{ sortie.nbInscriptionsMax }}</td>
+                        <td>{{ sortie.etat.libelle }}</td>
+                        <td>{{ sortie.nbInscriptionsMax }}</td>
+                        <td>{{ sortie.organisateur.pseudo }}</td>
+                        <td>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,11 +41,20 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_sortie_show', requirements: ['id'=> '\d+'], methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
+        ]);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_list', methods: ['GET'])]
+    public function list(SortieRepository $sortieRepository, CampusRepository $campusRepository): Response
+    {
+        return $this->render('sortie/list.html.twig', [
+            'sorties' => $sortieRepository->findAll(),
+            'campus' => $campusRepository->findAll(),
         ]);
     }
 
