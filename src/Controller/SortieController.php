@@ -2,10 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Campus;
-use App\Entity\Etat;
-use App\Entity\Lieu;
-use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\CampusRepository;
@@ -13,10 +9,14 @@ use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/sortie')]
 class SortieController extends AbstractController
@@ -39,7 +39,7 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $organisateur = $participantRepository->find(3695);
+            $organisateur = $participantRepository->find(3933);
             $campus = $campusRepository->find((int)$request->request->get('sortie')['campus']);
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
 
@@ -100,5 +100,21 @@ class SortieController extends AbstractController
         }
 
         return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    //Utilisé par appel Ajax
+    #[Route('/sortie_ville/{id}', name: 'app_sortie_ville', methods: ['GET'])]
+    public function afficherVille(int $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
+    {
+        $ville = $villeRepository->find($id);
+        $jsonContent = $serializer->serialize($ville, 'json', array('ignored_attributes' => ['lieus']));
+        return new Response($jsonContent);
+    }
+    #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
+    public function afficherLieu(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
+    {
+        $lieu = $lieuRepository->find($id);
+        $jsonContent = $serializer->serialize($lieu, 'json', array('ignored_attributes' => ['ville', 'sorties']));
+        return new Response($jsonContent);
     }
 }
