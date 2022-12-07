@@ -1,18 +1,15 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
+.accueil-page {
+    background-color: #FFFFFF;
+}
 .login-page {
     width: 360px;
     padding: 8% 0 0;
-    margin: auto;
-    background-color: #ebebeb;
-    border-radius: 10px;
-    width: 362px;
-    padding: 8% 0 0;
-    margin-top: 10%;
     background-color: #ebebeb;
     border-radius: 10px;
     height: 250px;
-    margin-left: 40%;
+    margin: 10% auto auto 40%;
 }
 .form {
     position: relative;
@@ -98,9 +95,7 @@
     color: #EF3B3A;
 }
 body {
-    background: #3a57af; /* fallback for old browsers */
-// background: rgb(141,194,111);
-//background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
+    background: #FFFFFF; /* fallback for old browsers */
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

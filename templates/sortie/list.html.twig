@@ -7,6 +7,7 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
+<div class="accueil-page">
     <div class="row text-center mt-5">
         <h3>Filtrer les sorties</h3>
     </div>
@@ -77,9 +78,13 @@
                         <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
                         <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>{% if  %}{{ sortie.nbInscriptionsMax }}</td>
+                        <td>{% if sortie.participants is not empty %}X{% endif %}</td> {# and app.user in sortie.participants#}
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
+                            {% if sortie.participants is not empty %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Afficher</label></a> {% endif %}
+                            {% if sortie.participants is not empty %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Modifier</label></a> {% endif %}
+                            {% if sortie.participants is not empty %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
+                            {% if sortie.participants is not empty %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -87,4 +92,5 @@
             </table>
         </div>
     </div>
+</div>
 {% endblock %}

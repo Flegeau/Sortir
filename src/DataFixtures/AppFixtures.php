@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Campus;
 use App\Entity\Participant;
+use App\Entity\Sortie;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Generator;
@@ -15,12 +16,12 @@ class AppFixtures extends Fixture
 
     private ObjectManager $manager;
     private UserPasswordHasherInterface $hasher;
-   // private Generatorrator $generator;
+    private Generator $generator;
 
     public function __construct(UserPasswordHasherInterface $hasher)
     {
         $this->hasher = $hasher;
-        //$this->generator = Factory::create('fr_FR');
+        $this->generator = Factory::create('fr_FR');
     }
 
 
@@ -31,6 +32,7 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
+        $this->addUser();
         $this->addUser();
     }
 
@@ -56,5 +58,26 @@ class AppFixtures extends Fixture
 
         $this->manager->persist($user);
         $this->manager->flush($user);
+    }
+
+    public function addSortie(){
+        for ($i = 0; $i < 10; $i++){
+            $sortie = new Sortie();
+            $sortie->setNom($this->generator->name)
+                ->setDateHeureDebut($this->generator->dateTimeBetween("+2 days", "+2 months"))
+                ->setDuree($this->generator->numberBetween(0, 1440))
+                ->setDateLimiteInscription($this->generator->dateTimeBetween( "-2 months","-2 days"))
+                ->setNbInscriptionsMax($this->generator->numberBetween(0, 10))
+                ->setInfoSortie($this->generator->sentence)
+                ->setMotif($this->generator->slug)
+                ->setEtat($this->generator->)
+                ->setLieu($this->generator->)
+                ->setCampus($this->generator->)
+                ->addParticipant($this->generator->);
+
+            $this->manager->persist($sortie);
+        }
+
+        $this->manager->flush();
     }
 }
