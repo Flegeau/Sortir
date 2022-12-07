@@ -11,15 +11,11 @@
     {% block stylesheets %}
     {% endblock %}
 
-    {% block javascriptshead %}
-    {% endblock %}
-</head>
-<body>
-<div class="container-fluid">
-    <header>
-{#        {% include "parts/top-bar.html.twig" %}#}
-    </header>
-    <main>
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
         {% block body %}{% endblock %}
     </main>
     <footer class="row">
