@@ -30,24 +30,32 @@ class SortieType extends AbstractType
             )
             ->add('dateHeureDebut', DateTimeType::class, array(
                 'label' => 'Date et heure de la sortie : ',
+                'date_format' => 'ddMMyyyy',
                 'required' => true)
             )
             ->add('dateLimiteInscription', DateType::class, array(
                 'label' => 'Date limite d\'inscription : ',
+                'format' => 'ddMMyyyy',
                 'required' => true)
             )
             ->add('nbInscriptionsMax', IntegerType::class, array(
                 'label' => 'Nombre de places : ',
-                'attr' => array('min' => 0),
+                'attr' => array(
+                    'min' => 0
+                ),
                 'required' => true)
             )
             ->add('duree', IntegerType::class, array(
                 'label' => 'Durée : ',
-                'attr' => array('min' => 0),
+                'attr' => array(
+                    'min' => 0,
+                    'step' => 10
+                ),
                 'required' => true)
             )
             ->add('infoSortie', TextareaType::class, array(
-                'label' => 'Description et infos : ')
+                'label' => 'Description et infos : ',
+                'required' => false)
             )
             ->add('campus', EntityType::class, array(
                 'class' => Campus::class,
@@ -69,23 +77,36 @@ class SortieType extends AbstractType
                 'required' => true)
             )
             ->add('ajouterLieu', ButtonType::class, array(
-                'label' => '',
-                'attr' => array('class' => 'bi bi-plus'))
+                'label' => '+',
+                'attr' => array('class' => 'bi bi-plus')
+                )
             )
             ->add('rue', TextType::class, array(
                 'label' => 'Rue : ',
+                'attr' => array(
+                    'readonly' => true
+                ),
                 'mapped' => false)
             )
             ->add('codePostal', TextType::class, array(
                 'label' => 'Code postal : ',
+                'attr' => array(
+                    'readonly' => true
+                ),
                 'mapped' => false)
             )
             ->add('latitude', NumberType::class, array(
                 'label' => 'Latitude : ',
+                'attr' => array(
+                    'readonly' => true
+                ),
                 'mapped' => false)
             )
             ->add('longitude', NumberType::class, array(
                 'label' => 'Longitude : ',
+                'attr' => array(
+                    'readonly' => true
+                ),
                 'mapped' => false)
             )
             ->add('enregistrer', SubmitType::class, array(
@@ -95,7 +116,10 @@ class SortieType extends AbstractType
                 'label' => 'Publier la sortie')
             )
             ->add('annuler', ButtonType::class, array(
-                'label' => 'Annuler')
+                'label' => 'Annuler',
+                'attr' => array(
+                    'onclick' => 'history.back()'
+                ))
             )
         ;
     }

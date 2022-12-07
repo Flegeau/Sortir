@@ -118,7 +118,10 @@ class AppFixturesQuentin extends Fixture
         $lieus = $this->manager->getRepository(Lieu::class)->findAll();
         $campus = $this->manager->getRepository(Campus::class)->findAll();
         $durees = array(60, 120, 180, 240, 300, 360);
-        $lorem = "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.";
+        $lorem = "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. 
+        Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. 
+        Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. 
+        Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.";
 
         for ($i = 0; $i < $nb; $i++)
         {
@@ -132,7 +135,7 @@ class AppFixturesQuentin extends Fixture
             $sortie->setDateHeureDebut($this->faker->dateTimeBetween("+3 months", "+8 months"));
             $sortie->setDuree($this->faker->randomElement($durees));
             $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("now", "+2 months"));
-            $nbP = $this->faker->numberBetween(0, 16);
+            $nbP = $this->faker->numberBetween(2, 20);
             $sortie->setNbInscriptionsMax($nbP);
             $sortie->setInfoSortie($lorem);
             $sortie->setEtat($this->faker->randomElement($etats));
@@ -140,7 +143,7 @@ class AppFixturesQuentin extends Fixture
             $sortie->setCampus($this->faker->randomElement($campus));
             $sortie->setOrganisateur($organisateur);
             $sortie->addParticipant($organisateur);
-            for ($ii = 1; $ii < $nbP; $ii++)
+            for ($ii = 1; $ii < $this->faker->numberBetween(1, $nbP); $ii++)
             {
                 $sortie->addParticipant($this->faker->randomElement($participants));
             }

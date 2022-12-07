@@ -8,28 +8,24 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Nom</th>
                 <th>DateHeureDebut</th>
                 <th>Duree</th>
                 <th>DateLimiteInscription</th>
-                <th>NbInscriptionsMax</th>
+                <th>NbInscriptions</th>
                 <th>InfoSortie</th>
-                <th>Motif</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for sortie in sorties %}
             <tr>
-                <td>{{ sortie.id }}</td>
                 <td>{{ sortie.nom }}</td>
-                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</td>
                 <td>{{ sortie.duree }}</td>
-                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d') : '' }}</td>
-                <td>{{ sortie.nbInscriptionsMax }}</td>
+                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/Y') : '' }}</td>
+                <td>{{ sortie.getParticipants.count() }}/{{ sortie.nbInscriptionsMax }}</td>
                 <td>{{ sortie.infoSortie }}</td>
-                <td>{{ sortie.motif }}</td>
                 <td>
                     <a href="{{ path('app_sortie_show', {'id': sortie.id}) }}">show</a>
                     <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>

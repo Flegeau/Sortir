@@ -3,41 +3,33 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
-    <h1>Sortie</h1>
+    <h1>Afficher une sortie</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ sortie.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
+                <th>Nom de la sortie : </th>
                 <td>{{ sortie.nom }}</td>
             </tr>
             <tr>
-                <th>DateHeureDebut</th>
-                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Date et heure de la sortie : </th>
+                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</td>
             </tr>
             <tr>
-                <th>Duree</th>
-                <td>{{ sortie.duree }}</td>
+                <th>Date limite d'inscription : </th>
+                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/Y') : '' }}</td>
             </tr>
             <tr>
-                <th>DateLimiteInscription</th>
-                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>NbInscriptionsMax</th>
+                <th>Nombre de places : </th>
                 <td>{{ sortie.nbInscriptionsMax }}</td>
             </tr>
             <tr>
-                <th>InfoSortie</th>
-                <td>{{ sortie.infoSortie }}</td>
+                <th>Durée : </th>
+                <td>{{ sortie.duree }} minutes</td>
             </tr>
             <tr>
-                <th>Motif</th>
-                <td>{{ sortie.motif }}</td>
+                <th>Description et infos : </th>
+                <td>{{ sortie.infoSortie }}</td>
             </tr>
         </tbody>
     </table>

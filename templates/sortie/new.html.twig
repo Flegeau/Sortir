@@ -11,33 +11,32 @@
 {% endblock %}
 
 {% block javascripts %}
-    {# Mettre dans un fichier sous public/js une fois fonctionnel #}
+    {# Mettre dans un fichier sous public/js une fois terminé #}
     <script type="text/javascript">
         (function (){
-            //dateJour();
-            //afficherInfosLieu();
-            //afficherInfosVille();
+            let minutes = document.createElement('span');
+            minutes.innerHTML = 'minutes';
+            document.getElementById('sortie_duree').after(minutes);
+
+            document.getElementById('sortie_ville').addEventListener('change', function (event){
+                afficherInfosVille(event);
+            });
+            document.getElementById('sortie_lieu').addEventListener('change', function (event){
+                console.log(event);
+                afficherInfosLieu(event);
+            });
         })();
 
-        function dateJour() {
-            let dateJour = new Date();
-            let elemDateDebut = document.getElementById('sortie_dateHeureDebut');
-            //let elemDateFin = document.getElementById('sortie_dateLimiteInscription');
-            elemDateDebut.setAttribute('value', dateJour);
-            elemDateDebut.setAttribute('min', dateJour);
-            console.log(dateJour);
+        function afficherInfosVille(event) {
+            console.log(event.target.value);
+            //let elemCodePostal = document.getElementById('sortie_codePostal');
         }
 
-        function afficherInfosLieu() {
-            //let elemLieu = document.getElementById('sortie_lieu');
-            //let rue = elemLieu['rue'];
-            //let latitude = elemLieu['latitude'];
-            //let longitude = elemLieu['longitude'];
-        }
-
-        function afficherInfosVille() {
-            //let elemVille = document.getElementById('sortie_ville');
-            //let codePostal = elemVille['codePostal'];
+        function afficherInfosLieu(event) {
+            console.log(event.target.value);
+            //let elemRue = document.getElementById('sortie_rue');
+            //let elemLatitude = document.getElementById('sortie_latitude');
+            //let elemLongitude = document.getElementById('sortie_longitude');
         }
     </script>
 {% endblock %}
