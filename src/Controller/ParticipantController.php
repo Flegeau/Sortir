@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
-use App\Form\ParticipantType;
 use App\Form\ProfilParticipantType;
 use App\Repository\ParticipantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
+
 
 #[Route('/participant')]
 class ParticipantController extends AbstractController
@@ -26,7 +29,7 @@ class ParticipantController extends AbstractController
     public function new(Request $request, ParticipantRepository $participantRepository): Response
     {
         $participant = new Participant();
-        $form = $this->createForm(ParticipantType::class, $participant);
+        $form = $this->createForm(ProfilParticipantType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -50,16 +53,40 @@ class ParticipantController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_participant_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Participant $participant, ParticipantRepository $participantRepository): Response
+    public function edit(Request $request, Participant $participant, ParticipantRepository $participantRepository, UserPasswordHasherInterface $participantPasswordHasher,SluggerInterface $slugger): Response
     {
-       // $participant
+        // $participant
         $form = $this->createForm(ProfilParticipantType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $photo = $form->get('photo')->getData();
+            if ($photo) {
+                $originalFilename = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$photo->guessExtension();
+                try {
+                    $photo->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                }
+                $participant->setPhoto($newFilename);
+            }
+            $participantRepository->update($participant);
+
+            $password = $participantPasswordHasher->hashPassword(
+                $participant,
+                $form->get('plainPassword')->getData()
+            );
+
+            $participant->setPassword($password);
             $participantRepository->save($participant, true);
-            var_dump($form);
-            return $this->redirectToRoute('app_participant_index', [], Response::HTTP_SEE_OTHER);
+            dump($form);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('participant/edit.html.twig', [
@@ -71,7 +98,7 @@ class ParticipantController extends AbstractController
     #[Route('/{id}', name: 'app_participant_delete', methods: ['POST'])]
     public function delete(Request $request, Participant $participant, ParticipantRepository $participantRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$participant->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $participant->getId(), $request->request->get('_token'))) {
             $participantRepository->remove($participant, true);
         }
 
