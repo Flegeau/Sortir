@@ -1,4 +1,4 @@
-{% set organisateur = null %}
+{#{% set organisateurs = organisateurs %}#}
 {% set sorties = sorties %}
 {% set campus = campus  %}
 
@@ -15,7 +15,7 @@
             <label>Campus</label>
             <input type="text" name="campus" list="campusname">
                 <datalist id="campusname">
-                    {% for key,campusName in campus %}
+                    {% for campusName in campus %}
                         <option value="{{ campusName.nom }}">
                     {% endfor %}
                 </datalist>
@@ -70,14 +70,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for key,sortie in sorties %}
+                {% for sortie in sorties %}
                     <tr>
                         <td>{{ sortie.nom }}</td>
                         <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
                         <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
-                        <td>{{ sortie.nbInscriptionsMax }}</td>
+                        <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>{{ sortie.nbInscriptionsMax }}</td>
+                        <td>{% if  %}{{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
                         </td>
