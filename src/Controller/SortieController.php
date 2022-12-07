@@ -44,6 +44,7 @@ class SortieController extends AbstractController
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
 
             $sortie->setOrganisateur($organisateur);
+            $sortie->addParticipant($organisateur);
             $sortie->setCampus($campus);
             $sortie->setLieu($lieu);
 
