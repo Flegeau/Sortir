@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<div class="login-page">
+    <div style="margin-left: 4%;
+    border: 2px dashed #3a57af;
+    display: inline-block;
+    border-radius: 7px;
+    margin-top: -29%;
+    width: 90%;
+    height: 300px;
+">
+
+        <form method="post" class="register-form" style="text-align: center";>
+            {% if error %}
+                <div class="alert alert-danger">Identifiants Incorrects</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <h1>Connexion</h1>
+
+            <label for="inputEmail"><i class="icon-envelope "></i></label>
+            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" class="form-control" autocomplete="email" required autofocus><br><br>
+            <label for="inputPassword"><i class="icon-shield"></i></label>
+            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de Passe"required><br><br>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}">
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" name="_remember_me"> Remember me
+                </label>
+            </div><br><br>
+
+
+            <button class="btn btn-lg btn-primary" type="submit" style="border-radius: 6px;
+    width: 40%;
+    background-color: #3a57af;
+    color: #ebebeb;
+    border-color: #ebebeb;
+}">
+                Sign in
+            </button>
+        </form>
+    </div>
+
+
+</div>
+{% endblock %}
