@@ -31,7 +31,7 @@ class AppFixturesQuentin extends Fixture
         $this->ajouterVilles(50);
         $this->ajouterLieus(25);
         $this->ajouterParticipants(120);
-        //$this->ajouterSorties(20);
+        $this->ajouterSorties(15);
     }
 
     public function ajouterEtats(): void
@@ -97,11 +97,11 @@ class AppFixturesQuentin extends Fixture
             $participant->setPrenom($this->faker->firstName);
             $participant->setTelephone($this->faker->phoneNumber);
             $participant->setEmail($this->faker->email);
-            var_dump($participant->getEmail());
+            //var_dump($participant->getEmail());
             $participant->setPseudo($this->faker->userName);
-            var_dump($participant->getPseudo());
+            //var_dump($participant->getPseudo());
             $goodPassword = $this->faker->password(8, 20);
-            var_dump($goodPassword);
+            //var_dump($goodPassword);
             //$participant->setPassword($this->hasher->hashPassword($participant, $goodPassword));
             $participant->setPassword($goodPassword);
             $participant->setActif($this->faker->boolean(99));
@@ -116,10 +116,14 @@ class AppFixturesQuentin extends Fixture
         $etats = $this->manager->getRepository(Etat::class)->findAll();
         $lieus = $this->manager->getRepository(Lieu::class)->findAll();
         $campus = $this->manager->getRepository(Campus::class)->findAll();
-        $participants = $this->manager->getRepository(Participant::class)->findAll();
 
         for ($i = 0; $i < $nb; $i++)
         {
+            $participants = $this->manager->getRepository(Participant::class)->findAll();
+            $indexOrganisateur = (int)$this->faker->randomKey($participants);
+            $organisateur = $participants[$indexOrganisateur];
+            unset($participants[$indexOrganisateur]);
+
             $sortie = new Sortie();
             $sortie->setNom($this->faker->name);
             $sortie->setDateHeureDebut($this->faker->dateTimeBetween("+3 months", "+8 months"));
@@ -127,11 +131,10 @@ class AppFixturesQuentin extends Fixture
             $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("now", "+2 months"));
             $nbP = $this->faker->numberBetween(0, 16);
             $sortie->setNbInscriptionsMax($nbP);
-            $sortie->setInfoSortie($this->faker->text);
+            //$sortie->setInfoSortie($this->faker->text);   Problème text
             $sortie->setEtat($this->faker->randomElement($etats));
             $sortie->setLieu($this->faker->randomElement($lieus));
             $sortie->setCampus($this->faker->randomElement($campus));
-            $organisateur = $this->faker->randomElement($participants);
             $sortie->setOrganisateur($organisateur);
             $sortie->addParticipant($organisateur);
             for ($i = 1; $i < $nbP; $i++)
