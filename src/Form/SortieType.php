@@ -89,7 +89,7 @@ class SortieType extends AbstractType
                 'mapped' => false)
             )
             ->add('enregistrer', SubmitType::class, array(
-                    'label' => 'Enregistrer')
+                'label' => 'Enregistrer')
             )
             ->add('publier', SubmitType::class, array(
                 'label' => 'Publier la sortie')

@@ -31,12 +31,13 @@ class AppFixturesQuentin extends Fixture
         $this->ajouterVilles(50);
         $this->ajouterLieus(25);
         $this->ajouterParticipants(120);
-        $this->ajouterSorties(15);
+        $this->ajouterSorties(20);
     }
 
     public function ajouterEtats(): void
     {
-        $libelles = ['Créée', 'Ouverte', 'Clôturée', 'Activité en cours', 'Passée', 'Annulée', 'Historisée'];
+        $libelles = array('Créée', 'Ouverte', 'Clôturée', 'Activité en cours', 'Passée', 'Annulée', 'Historisée');
+
         for ($i = 0; $i < count($libelles); $i++)
         {
             $etat = new Etat();
@@ -116,6 +117,8 @@ class AppFixturesQuentin extends Fixture
         $etats = $this->manager->getRepository(Etat::class)->findAll();
         $lieus = $this->manager->getRepository(Lieu::class)->findAll();
         $campus = $this->manager->getRepository(Campus::class)->findAll();
+        $durees = array(60, 120, 180, 240, 300, 360);
+        $lorem = "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.";
 
         for ($i = 0; $i < $nb; $i++)
         {
@@ -127,17 +130,17 @@ class AppFixturesQuentin extends Fixture
             $sortie = new Sortie();
             $sortie->setNom($this->faker->name);
             $sortie->setDateHeureDebut($this->faker->dateTimeBetween("+3 months", "+8 months"));
-            $sortie->setDuree($this->faker->numberBetween(60, 240));
+            $sortie->setDuree($this->faker->randomElement($durees));
             $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("now", "+2 months"));
             $nbP = $this->faker->numberBetween(0, 16);
             $sortie->setNbInscriptionsMax($nbP);
-            //$sortie->setInfoSortie($this->faker->text);   Problème text
+            $sortie->setInfoSortie($lorem);
             $sortie->setEtat($this->faker->randomElement($etats));
             $sortie->setLieu($this->faker->randomElement($lieus));
             $sortie->setCampus($this->faker->randomElement($campus));
             $sortie->setOrganisateur($organisateur);
             $sortie->addParticipant($organisateur);
-            for ($i = 1; $i < $nbP; $i++)
+            for ($ii = 1; $ii < $nbP; $ii++)
             {
                 $sortie->addParticipant($this->faker->randomElement($participants));
             }
