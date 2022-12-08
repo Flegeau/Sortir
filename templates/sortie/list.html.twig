@@ -10,50 +10,54 @@
     <div class="row text-center mt-5">
         <h3>Filtrer les sorties</h3>
     </div>
-    <div class="row mt-5">
-        <div class="col-8 offset-2">
-            <label>Campus</label>
-            <input type="text" name="campus" list="campusname">
-                <datalist id="campusname">
-                    {% for campusName in campus %}
-                        <option value="{{ campusName.nom }}">
-                    {% endfor %}
-                </datalist>
-        </div>
-        <div class="col-8 offset-2">
-            <label>Le nom de la sortie contient:</label>
-            <input type="search" name="sortiename" id="sortie">
-        </div>
-        <div class="col-8 offset-2">
-            <label>Entre</label>
-            <input type="date" name="datestart" id="datestart">
-            <label>Et</label>
-            <input type="date" name="dateend" id="dateend">
-        </div>
+    <div class="col-8 offset-2">
+        <label>Date du jour: {{ "now"|date("d/m/Y") }}</label>
     </div>
-    <div class="row mt-5">
-        <div class="col-8 offset-2">
-            <div>
-                <input type="checkbox" name="organisateur">
-                <label>Sortie dont  je suis l'organisateur/trice</label>
-            </div>
-            <div>
-                <input type="checkbox" name="inscrit">
-                <label>Sortie auxquelles je suis inscrit/e</label>
-            </div>
-            <div>
-                <input type="checkbox" name="non-inscrit">
-                <label>Sortie auxquelles je ne suis pas inscrit/e</label>
-            </div>
-            <div>
-                <input type="checkbox" name="passees">
-                <label>Sortie passées</label>
-            </div>
-        </div>
-        <div class="col-8 offset-2">
-            <button type="submit">Recherche</button>
-        </div>
+    <div class="col-8 offset-2">
+        <label>Participant: {{ app.user.pseudo }}</label>
     </div>
+    <form method="post">
+        <div class="row mt-5">
+            <div class="col-8 offset-2">
+                <label for="campus">Campus</label><input type="text" name="campus" list="campusname" id="campus">
+                    <datalist id="campusname">
+                        {% for campusName in campus %}
+                            <option value="{{ campusName.nom }}">
+                        {% endfor %}
+                    </datalist>
+            </div>
+            <div class="col-8 offset-2">
+                <label for="sortie">Le nom de la sortie contient:</label><input type="search" name="sortiename" id="sortie">
+            </div>
+            <div class="col-8 offset-2">
+                <label for="datestart">Entre</label><input type="date" name="datestart" id="datestart">
+                <label for="dateend">Et</label><input type="date" name="dateend" id="dateend">
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-8 offset-2">
+                <div>
+                    <input type="checkbox" name="filter[]" value="organisateur" id="organisateur">
+                    <label for="organisateur">Sortie dont  je suis l'organisateur/trice</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filter[]" value="inscrit" id="inscrit">
+                    <label for="inscrit">Sortie auxquelles je suis inscrit/e</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filter[]" value="non-inscrit" id="non-inscrit">
+                    <label for="non-inscrit">Sortie auxquelles je ne suis pas inscrit/e</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="filter[]" value="passees" id="passees">
+                    <label for="passees">Sortie passées</label>
+                </div>
+            </div>
+            <div class="col-8 offset-2">
+                <button type="submit">Recherche</button>
+            </div>
+        </div>
+    </form>
     <div class="row mt-5">
         <div class="col-6 offset-3">
             <table class="table">
@@ -70,25 +74,28 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{ libellesShow = array('Ouverte', 'Clôturée', 'Activité en cours', 'Passée', 'Annulée') }}
+                {% set libellesShow = ['Ouverte', 'Clôturée', 'Activité en cours', 'Passée'] %}
+                {% set libelles = ['Ouverte', 'Clôturée'] %}
                 {% for sortie in sorties %}
+                    {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) and sortie.etat.libelle != "Historisée" %}
                     <tr>
                         <td>{{ sortie.nom }}</td>
                         <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
                         <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
                         <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
-                        <td>{% if sortie.participants is not empty %}X{% endif %}</td> {# and app.user in sortie.participants#}
+                        <td>{% if app.user in sortie.participants %}X{% endif %}</td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
-                            {% if sortie.etat.libelle not in libellesShow %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Afficher</label></a> {% endif %}
-                            {% if app.user == sortie.organisateur and sortie.etat.libelle != "Créée" %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Modifier</label></a> {% endif %}
-                            {% if app.user == sortie.organisateur and sortie.etat.libelle != "Créée" %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Publier</label></a> {% endif %}
-                            {% if app.user == sortie.organisateur and sortie.etat.libelle != "Ouverte" %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Annuler</label></a> {% endif %}
-                            {% if app.user not == sortie.organisateur and sortie.participants is not empty and app.user not in sortie.participants and sortie.etat.libelle != "Ouverte" %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
-                            {% if app.user not == sortie.organisateur and sortie.participants is not empty and app.user in sortie.participants and sortie.etat.libelle != "Ouverte" %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
+                            {% if is_granted('SHOW_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Afficher</label></a> {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Modifier</label></a> {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Publier</label></a> {% endif %}
+                            {% if is_granted('CANCEL_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Annuler</label></a> {% endif %}
+                            {% if is_granted('IN_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
+                            {% if is_granted('OUT_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
                         </td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

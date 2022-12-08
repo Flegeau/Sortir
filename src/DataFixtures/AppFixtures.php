@@ -12,14 +12,17 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private ObjectManager $manager;
     private Generator $faker;
+    private UserPasswordHasherInterface $hasher;
 
-    public function __construct()
+    public function __construct(UserPasswordHasherInterface $hasher)
     {
+        $this->hasher = $hasher;
         $this->faker = Factory::create('fr_FR');
     }
 
@@ -30,8 +33,8 @@ class AppFixtures extends Fixture
         $this->ajouterCampus(10);
         $this->ajouterVilles(50);
         $this->ajouterLieus(25);
-        $this->ajouterParticipants(120);
-        $this->ajouterSorties(20);
+        $this->ajouterParticipants(40);
+        $this->ajouterSorties(120);
     }
 
     public function ajouterEtats(): void
@@ -91,6 +94,22 @@ class AppFixtures extends Fixture
     {
         $campus = $this->manager->getRepository(Campus::class)->findAll();
 
+        $user = new Participant();
+        $user->setNom("Flegeau");
+        $user->setPrenom("Loevan");
+        $user->setTelephone("06 17 12 54 35");
+        $user->setEmail("loevan.flegeau2021@campus-eni.fr");
+        //var_dump($user->getEmail());
+        $user->setPseudo("Loevan F.");
+        //var_dump($user->getPseudo());
+        $goodPassword = "123456";
+        //var_dump($goodPassword);
+        $user->setPassword($this->hasher->hashPassword($user, $goodPassword));
+//        $user->setPassword($goodPassword);
+        $user->setActif(true);
+        $user->setCampus($this->faker->randomElement($campus));
+        $this->manager->persist($user);
+
         for ($i = 0; $i < $nb; $i++)
         {
             $participant = new Participant();
@@ -103,7 +122,7 @@ class AppFixtures extends Fixture
             //var_dump($participant->getPseudo());
             $goodPassword = $this->faker->password(8, 20);
             //var_dump($goodPassword);
-            //$participant->setPassword($this->hasher->hashPassword($participant, $goodPassword));
+//            $participant->setPassword($this->hasher->hashPassword($participant, $goodPassword));
             $participant->setPassword($goodPassword);
             $participant->setActif($this->faker->boolean(99));
             $participant->setCampus($this->faker->randomElement($campus));
