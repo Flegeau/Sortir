@@ -28,8 +28,8 @@ class AppFixturesQuentin extends Fixture
         $this->manager = $manager;
         $this->ajouterEtats();
         $this->ajouterCampus(10);
-        $this->ajouterVilles(50);
-        $this->ajouterLieus(25);
+        $this->ajouterVilles(30);
+        $this->ajouterLieus(50);
         $this->ajouterParticipants(120);
         $this->ajouterSorties(20);
     }

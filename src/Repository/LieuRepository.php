@@ -39,18 +39,6 @@ class LieuRepository extends ServiceEntityRepository
         }
     }
 
-    public function obtenirLieusSelonVille(int $idVille): array
-    {
-        $em = $this->getEntityManager();
-        $qb= $em->createQueryBuilder()
-            ->select("l")
-            ->from("App\Entity\Lieu","l")
-            ->where("l.ville = :ville");
-        $query=$qb->getQuery();
-        $query->setParameter("ville", $idVille);
-        return $query->getResult();
-    }
-
 //    /**
 //     * @return Lieu[] Returns an array of Lieu objects
 //     */

@@ -3,12 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Campus;
-use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\Ville;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -30,12 +28,13 @@ class SortieType extends AbstractType
             )
             ->add('dateHeureDebut', DateTimeType::class, array(
                 'label' => 'Date et heure de la sortie : ',
-                'date_format' => 'ddMMyyyy',
+                'widget' => 'single_text',
+                'with_seconds' => false,
                 'required' => true)
             )
             ->add('dateLimiteInscription', DateType::class, array(
                 'label' => 'Date limite d\'inscription : ',
-                'format' => 'ddMMyyyy',
+                'widget' => 'single_text',
                 'required' => true)
             )
             ->add('nbInscriptionsMax', IntegerType::class, array(
@@ -70,27 +69,9 @@ class SortieType extends AbstractType
                 'choice_label' => 'nom',
                 'mapped' => false,
                 'required' => true)
-            )/*
-            ->add('lieu', EntityType::class, array(
-                'class' => Lieu::class,
-                'label' => 'Lieu : ',
-                'choice_label' => 'nom',
-                'required' => true)
-            )*/
-            ->add('ajouterLieu', ButtonType::class, array(
-                'label' => '+',
-                'attr' => array('class' => 'bi bi-plus')
-                )
             )
             ->add('rue', TextType::class, array(
                 'label' => 'Rue : ',
-                'attr' => array(
-                    'readonly' => true
-                ),
-                'mapped' => false)
-            )
-            ->add('codePostal', TextType::class, array(
-                'label' => 'Code postal : ',
                 'attr' => array(
                     'readonly' => true
                 ),
@@ -116,12 +97,6 @@ class SortieType extends AbstractType
             ->add('publier', SubmitType::class, array(
                 'label' => 'Publier la sortie')
             )
-            ->add('annuler', ButtonType::class, array(
-                'label' => 'Annuler',
-                'attr' => array(
-                    'onclick' => 'history.back()'
-                ))
-            )
         ;
     }
 
@@ -129,6 +104,7 @@ class SortieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
+            'allow_extra_fields' => true
         ]);
     }
 }

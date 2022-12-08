@@ -1,12 +1,17 @@
 window.onload = () => {
     parDefault();
-    ajaxLieu();
-
     $(document).on('change', '#sortie_ville', function() {
+        viderInfosLieu();
         ajaxVille();
     });
     $(document).on('change', '#sortie_lieu', function() {
         ajaxLieu();
+    });
+    $(document).on('change', '#sortie_dateHeureDebut', function (e) {
+        $('#sortie_dateLimiteInscription').attr({'max' : e.target.value.substring(0, 10)});
+    });
+    $(document).on('change', '#sortie_dateLimiteInscription', function (e) {
+        $('#sortie_dateHeureDebut').attr({'min' : e.target.value + 'T00:00'});
     });
 }
 
@@ -14,7 +19,9 @@ function parDefault() {
     let minutes = $('<span>').html('minutes');
     $('#sortie_duree').after(minutes);
     creerElementLieu();
+    creerElementCodePostal();
     ajaxVille();
+    ajaxLieu();
 }
 
 function ajaxVille() {
@@ -24,7 +31,7 @@ function ajaxVille() {
         url: "sortie_ville/" + id,
         dataType: "json",
         success: function(data) {
-            afficherInfosVille(data);
+            $('#sortie_codePostal').val(data['codePostal']);
         }
     });
     $.ajax({
@@ -52,10 +59,6 @@ function ajaxLieu() {
     }
 }
 
-function afficherInfosVille(data) {
-    $('#sortie_codePostal').val(data['codePostal']);
-}
-
 function afficherListeLieus(data) {
     let select = $('#sortie_lieu');
     select.find('option').remove().end();
@@ -69,20 +72,43 @@ function afficherListeLieus(data) {
     }
 }
 
+function creerElementCodePostal() {
+    let parent = $('#div_codePostal');
+    let label = $('<label>', {'class': 'col-form-label col-sm-2 required', 'for': 'sortie_codePostal'}).html('Code postal : ');
+    let divCol = $('<div>', {'class': 'col-sm-10'});
+    let input = $('<input>', {'type': 'text', 'id': 'sortie_codePostal', 'name': 'sortie[codePostal]',
+        'required': 'required', 'readonly': 'readonly', 'class': 'form-control'});
+
+    parent.append(label);
+    parent.append(divCol);
+    divCol.append(input);
+}
+
 function creerElementLieu() {
-    let parent = $('#sortie_ville').parent().parent();
-    let div = $('<div>', {'class': 'mb-3 row'});
-    let label = $('<label>', {'class': 'col-form-label col-sm-2 required', 'htmlFor': 'sortie_lieu'}).html('Lieu : ');
+    let parent = $('#div_lieu');
+    let label = $('<label>', {'class': 'col-form-label col-sm-2 required', 'for': 'sortie_lieu'}).html('Lieu : ');
     let divCol = $('<div>', {'class': 'col-sm-10'});
     let select = $('<select>', {'id': 'sortie_lieu', 'name': 'sortie[lieu]', 'class': 'form-select'});
-    parent.after(div);
-    div.append(label);
-    div.append(divCol);
+
+    parent.append(label);
+    parent.append(divCol);
     divCol.append(select);
 }
 
 function afficherInfosLieu(data) {
-    $('#sortie_rue').val(data['rue']);
-    $('#sortie_latitude').val(data['latitude']);
-    $('#sortie_longitude').val(data['longitude']);
+    if (data != null) {
+        $('#sortie_rue').val(data['rue']);
+        $('#sortie_latitude').val(data['latitude']);
+        $('#sortie_longitude').val(data['longitude']);
+    }
+}
+
+function viderInfosLieu() {
+    $('#sortie_rue').val('');
+    $('#sortie_latitude').val('');
+    $('#sortie_longitude').val('');
+}
+
+function ajouterUnNouveauLieu() {
+    alert('création nouveau lieu');
 }

@@ -3,11 +3,83 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
-    <h1>Modifier une sortie</h1>
+<h1>Modifier une sortie</h1>
+{{ form_start(form) }}
+<div class="row justify-content-around">
+    <div class="col-5">
+        <div class="mb-3">
+            {{ form_row(form.nom) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.dateHeureDebut) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.dateLimiteInscription) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.nbInscriptionsMax) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.duree) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.infoSortie) }}
+        </div>
+    </div>
+    <div class="col-5">
+        <div class="mb-3">
+            {{ form_row(form.campus) }}
+        </div>
+        <div class="mb-3">
+            <div class="mb-3 row">
+                <label class="col-form-label col-sm-2 required" for="sortie_lieu">Lieu : </label>
+                <div class="col-sm-10">
+                    <select id="sortie_lieu" name="sortie[lieu]" class="form-select">
+                        {% for lieu in lieus %}
+                            <option value="{{ lieu.id }}" {{ sortie.lieu.id is same as(lieu.id) ? 'selected' : '' }}>{{ lieu.nom }}</option>
+                        {% endfor %}
+                        <input type="hidden" id="id_lieu">
+                    </select>
+                </div>
+            </div>
+            <a href="#" id="ajouter_lieu" class="btn btn-sm" onclick="ajouterUnNouveauLieu();">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+                </svg>
+            </a>
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.rue) }}
+        </div>
+        <div class="mb-3">
+            <div class="mb-3 row">
+                <label class="col-form-label col-sm-2 required" for="sortie_codePostal">Code postal : </label>
+                <div class="col-sm-10">
+                    <input type="text" id="sortie_codePostal" name="sortie[codePostal]" readonly="readonly"
+                           class="form-control" value="{{ sortie.lieu.ville.codePostal }}">
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.latitude) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.longitude) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    {{ form_widget(form.enregistrer) }}
+    {{ form_widget(form.publier) }}
+    <form method="post" action="{{ path('app_sortie_delete', {'id': sortie.id}) }}" onsubmit="return confirm('Confirmez-vous la suppression de la sortie ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
+        <button class="btn btn-primary">Supprimer la sortie</button>
+    </form>
+    <a href="{{ path('app_sortie_index') }}" class="btn btn-primary" role="button">Annuler</a>
+</div>
+{{ form_end(form) }}
+{% endblock %}
 
-    {{ include('sortie/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_sortie_index') }}">back to list</a>
-
-    {{ include('sortie/_delete_form.html.twig') }}
+{% block javascripts %}
+<script src="{{ asset('js/modifier_sortie.js') }}" type="text/javascript"></script>
 {% endblock %}

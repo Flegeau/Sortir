@@ -3,87 +3,85 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
-    <h1>Afficher une sortie</h1>
+<h1>Afficher une sortie</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Nom de la sortie : </th>
-                <td>{{ sortie.nom }}</td>
-            </tr>
-            <tr>
-                <th>Date et heure de la sortie : </th>
-                <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date limite d'inscription : </th>
-                <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/Y') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Nombre de places : </th>
-                <td>{{ sortie.nbInscriptionsMax }}</td>
-            </tr>
-            <tr>
-                <th>Durée : </th>
-                <td>{{ sortie.duree }} minutes</td>
-            </tr>
-            <tr>
-                <th>Description et infos : </th>
-                <td>{{ sortie.infoSortie }}</td>
-            </tr>
-            <tr>
-                <th>Campus : </th>
-                <td>{{ sortie.getCampus().getNom() }}</td>
-            </tr>
-            <tr>
-                <th>Lieu : </th>
-                <td>{{ sortie.getLieu().getNom() }} à {{ sortie.getLieu().getVille().getNom() }}</td>
-            </tr>
-            <tr>
-                <th>Rue : </th>
-                <td>{{ sortie.getLieu().getRue() }}</td>
-            </tr>
-            <tr>
-                <th>Code postal : </th>
-                <td>{{ sortie.getLieu().getVille().getNom() }}</td>
-            </tr>
-            <tr>
-                <th>Latitude : </th>
-                <td>{{ sortie.getLieu().getLatitude() }}</td>
-            </tr>
-            <tr>
-                <th>Longitude : </th>
-                <td>{{ sortie.getLieu().getLongitude() }}</td>
-            </tr>
-        </tbody>
-    </table>
+<table class="table">
+    <tbody>
+        <tr>
+            <th>Nom de la sortie : </th>
+            <td>{{ sortie.nom }}</td>
+        </tr>
+        <tr>
+            <th>Date et heure de la sortie : </th>
+            <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Date limite d'inscription : </th>
+            <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/Y') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Nombre de places : </th>
+            <td>{{ sortie.nbInscriptionsMax }}</td>
+        </tr>
+        <tr>
+            <th>Durée : </th>
+            <td>{{ sortie.duree }} minutes</td>
+        </tr>
+        <tr>
+            <th>Description et infos : </th>
+            <td>{{ sortie.infoSortie }}</td>
+        </tr>
+        <tr>
+            <th>Campus : </th>
+            <td>{{ sortie.campus.nom }}</td>
+        </tr>
+        <tr>
+            <th>Lieu : </th>
+            <td>{{ sortie.lieu.nom }} à {{ sortie.lieu.ville.nom }}</td>
+        </tr>
+        <tr>
+            <th>Rue : </th>
+            <td>{{ sortie.lieu.rue }}</td>
+        </tr>
+        <tr>
+            <th>Code postal : </th>
+            <td>{{ sortie.lieu.ville.nom }}</td>
+        </tr>
+        <tr>
+            <th>Latitude : </th>
+            <td>{{ sortie.lieu.latitude }}</td>
+        </tr>
+        <tr>
+            <th>Longitude : </th>
+            <td>{{ sortie.lieu.longitude }}</td>
+        </tr>
+    </tbody>
+</table>
 
-    {% if sortie.getParticipants()|length > 1 %}
-    <table class="table">
-        <thead>
-            <tr>
-                <td>Pseudo</td>
-                <td>Nom</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for participant in sortie.getParticipants() %}
-            {% if participant.id != sortie.getOrganisateur().getId() %}
-            <tr>
-                <td>{{ participant.pseudo }}</td>
-                <td>{{ participant.prenom }} {{ participant.nom|upper }}</td>
-            </tr>
-            {% endif  %}
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else  %}
-    <p>Aucun participant pour le moment.</p>
-    {% endif %}
+{% if sortie.participants|length > 1 %}
+<table class="table">
+    <thead>
+        <tr>
+            <td>Pseudo</td>
+            <td>Nom</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for participant in sortie.participants %}
+        {% if participant.id != sortie.organisateur.id %}
+        <tr>
+            <td>{{ participant.pseudo }}</td>
+            <td>{{ participant.prenom }} {{ participant.nom|upper }}</td>
+        </tr>
+        {% endif  %}
+        {% endfor %}
+    </tbody>
+</table>
+{% else  %}
+<p>Aucun participant pour le moment.</p>
+{% endif %}
 
-    <a href="{{ path('app_sortie_index') }}">back to list</a>
+<a href="{{ path('app_sortie_index') }}">back to list</a>
 
-    <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>
-
-    {{ include('sortie/_delete_form.html.twig') }}
+<a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>
 {% endblock %}
