@@ -3,12 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Campus;
-use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\Ville;
+use DateTime;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -23,38 +22,43 @@ class SortieType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $dateJour = new DateTime();
         $builder
             ->add('nom', TextType::class, array(
-                'label' => 'Nom de la sortie : ',
+                'label' => 'Nom de la sortie',
                 'required' => true)
             )
             ->add('dateHeureDebut', DateTimeType::class, array(
-                'label' => 'Date et heure de la sortie : ',
-                'date_format' => 'ddMMyyyy',
+                'label' => 'Date et heure de la sortie',
+                'widget' => 'single_text',
+                'attr' => array('min' => $dateJour->format('Y-m-d H:i')),
+                'with_seconds' => false,
                 'required' => true)
             )
             ->add('dateLimiteInscription', DateType::class, array(
-                'label' => 'Date limite d\'inscription : ',
-                'format' => 'ddMMyyyy',
+                'label' => 'Date limite d\'inscription',
+                'widget' => 'single_text',
+                'attr' => array('min' => $dateJour->format('Y-m-d')),
                 'required' => true)
             )
             ->add('nbInscriptionsMax', IntegerType::class, array(
-                'label' => 'Nombre de places : ',
+                'label' => 'Nombre de places',
                 'attr' => array(
                     'min' => 0
                 ),
                 'required' => true)
             )
             ->add('duree', IntegerType::class, array(
-                'label' => 'Durée : ',
+                'label' => 'Durée',
                 'attr' => array(
                     'min' => 0,
-                    'step' => 10
+                    'step' => 5,
+                    'placeholder' => 'en minutes'
                 ),
                 'required' => true)
             )
             ->add('infoSortie', TextareaType::class, array(
-                'label' => 'Description et infos : ',
+                'label' => 'Description et infos',
                 'attr' => array('rows' => 5),
                 'required' => false)
             )
@@ -69,42 +73,24 @@ class SortieType extends AbstractType
                 'label' => 'Ville',
                 'choice_label' => 'nom',
                 'mapped' => false,
-                'required' => true)
-            )/*
-            ->add('lieu', EntityType::class, array(
-                'class' => Lieu::class,
-                'label' => 'Lieu : ',
-                'choice_label' => 'nom',
-                'required' => true)
-            )*/
-            ->add('ajouterLieu', ButtonType::class, array(
-                'label' => '+',
-                'attr' => array('class' => 'bi bi-plus')
-                )
+                'required' => false)
             )
             ->add('rue', TextType::class, array(
-                'label' => 'Rue : ',
-                'attr' => array(
-                    'readonly' => true
-                ),
-                'mapped' => false)
-            )
-            ->add('codePostal', TextType::class, array(
-                'label' => 'Code postal : ',
+                'label' => 'Rue',
                 'attr' => array(
                     'readonly' => true
                 ),
                 'mapped' => false)
             )
             ->add('latitude', NumberType::class, array(
-                'label' => 'Latitude : ',
+                'label' => 'Latitude',
                 'attr' => array(
                     'readonly' => true
                 ),
                 'mapped' => false)
             )
             ->add('longitude', NumberType::class, array(
-                'label' => 'Longitude : ',
+                'label' => 'Longitude',
                 'attr' => array(
                     'readonly' => true
                 ),
@@ -116,12 +102,6 @@ class SortieType extends AbstractType
             ->add('publier', SubmitType::class, array(
                 'label' => 'Publier la sortie')
             )
-            ->add('annuler', ButtonType::class, array(
-                'label' => 'Annuler',
-                'attr' => array(
-                    'onclick' => 'history.back()'
-                ))
-            )
         ;
     }
 
@@ -129,6 +109,7 @@ class SortieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
+            'allow_extra_fields' => true
         ]);
     }
 }

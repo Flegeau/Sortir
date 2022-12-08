@@ -1,20 +1,22 @@
 window.onload = () => {
     parDefault();
-    ajaxLieu();
-
     $(document).on('change', '#sortie_ville', function() {
+        viderInfosLieu();
         ajaxVille();
     });
     $(document).on('change', '#sortie_lieu', function() {
         ajaxLieu();
     });
+    $(document).on('change', '#sortie_dateHeureDebut', function (e) {
+        controlerDateSortie(e);
+    });
+    $(document).on('change', '#sortie_dateLimiteInscription', function (e) {
+        controlerDateFin(e);
+    });
 }
 
 function parDefault() {
-    let minutes = $('<span>').html('minutes');
-    $('#sortie_duree').after(minutes);
-    creerElementLieu();
-    ajaxVille();
+    $('#sortie_ville').attr('required', 'required');
 }
 
 function ajaxVille() {
@@ -24,7 +26,7 @@ function ajaxVille() {
         url: "sortie_ville/" + id,
         dataType: "json",
         success: function(data) {
-            afficherInfosVille(data);
+            $('#sortie_codePostal').val(data['codePostal']);
         }
     });
     $.ajax({
@@ -52,10 +54,6 @@ function ajaxLieu() {
     }
 }
 
-function afficherInfosVille(data) {
-    $('#sortie_codePostal').val(data['codePostal']);
-}
-
 function afficherListeLieus(data) {
     let select = $('#sortie_lieu');
     select.find('option').remove().end();
@@ -69,20 +67,32 @@ function afficherListeLieus(data) {
     }
 }
 
-function creerElementLieu() {
-    let parent = $('#sortie_ville').parent().parent();
-    let div = $('<div>', {'class': 'mb-3 row'});
-    let label = $('<label>', {'class': 'col-form-label col-sm-2 required', 'htmlFor': 'sortie_lieu'}).html('Lieu : ');
-    let divCol = $('<div>', {'class': 'col-sm-10'});
-    let select = $('<select>', {'id': 'sortie_lieu', 'name': 'sortie[lieu]', 'class': 'form-select'});
-    parent.after(div);
-    div.append(label);
-    div.append(divCol);
-    divCol.append(select);
+function afficherInfosLieu(data) {
+    if (data != null) {
+        $('#sortie_rue').val(data['rue']);
+        $('#sortie_latitude').val(data['latitude']);
+        $('#sortie_longitude').val(data['longitude']);
+    }
 }
 
-function afficherInfosLieu(data) {
-    $('#sortie_rue').val(data['rue']);
-    $('#sortie_latitude').val(data['latitude']);
-    $('#sortie_longitude').val(data['longitude']);
+function viderInfosLieu() {
+    $('#sortie_rue').val('');
+    $('#sortie_latitude').val('');
+    $('#sortie_longitude').val('');
+}
+
+function controlerDateSortie(e) {
+    let dateFin = $('#sortie_dateLimiteInscription');
+    dateFin.remove('max');
+    dateFin.attr({'max' : e.target.value.substring(0, 10)});
+}
+
+function controlerDateFin(e) {
+    let dateSortie = $('#sortie_dateHeureDebut');
+    dateSortie.remove('min');
+    dateSortie.attr({'min' : e.target.value + ' 00:00'});
+}
+
+function ajouterUnNouveauLieu() {
+    alert('création nouveau lieu');
 }

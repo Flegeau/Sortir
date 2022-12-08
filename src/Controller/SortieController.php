@@ -15,8 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/sortie')]
 class SortieController extends AbstractController
@@ -39,7 +37,7 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $organisateur = $participantRepository->find(3933);
+            $organisateur = $participantRepository->find(15);
             $campus = $campusRepository->find((int)$request->request->get('sortie')['campus']);
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
 
@@ -49,13 +47,10 @@ class SortieController extends AbstractController
             $sortie->setLieu($lieu);
 
             if ($form->get('enregistrer')->isClicked()) {
-                $etatC = $etatRepository->findBy(array('libelle' => 'Créée'))[0];
-                $sortie->setEtat($etatC);
+                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Créée')));
             } else if ($form->get('publier')->isClicked()) {
-                $etatO = $etatRepository->findBy(array('libelle' => 'Ouverte'))[0];
-                $sortie->setEtat($etatO);
+                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
             }
-
             $sortieRepository->save($sortie, true);
 
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
@@ -70,18 +65,35 @@ class SortieController extends AbstractController
     #[Route('/{id}', name: 'app_sortie_show', methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
+        $nonAffichable = array('Créée', 'Annulée', 'Historisée');
+        if (in_array($sortie->getEtat()->getLibelle(), $nonAffichable)) {
+            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+        }
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
         ]);
     }
 
     #[Route('/{id}/modifier', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
+    public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository,
+                         LieuRepository $lieuRepository, EtatRepository $etatRepository): Response
     {
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
+        $lieus = $sortie->getLieu()->getVille()->getLieus();
+
+        //Test sur l'id de l'utilisateur à voir
+        if ($sortie->getOrganisateur()->getId() === 0 ||
+            $sortie->getEtat()->getLibelle() !== 'Créée') {
+            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
+            $sortie->setLieu($lieu);
+            if ($form->get('publier')->isClicked()) {
+                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+            }
             $sortieRepository->save($sortie, true);
 
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
@@ -89,6 +101,7 @@ class SortieController extends AbstractController
 
         return $this->renderForm('sortie/edit.html.twig', [
             'sortie' => $sortie,
+            'lieus' => $lieus,
             'form' => $form,
         ]);
     }
@@ -105,23 +118,32 @@ class SortieController extends AbstractController
 
     //Utilisé par appel Ajax
     #[Route('/sortie_ville/{id}', name: 'app_sortie_ville', methods: ['GET'])]
-    public function afficherVille(int $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
+    public function afficherVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
     {
-        $ville = $villeRepository->find($id);
+        if ($id == null || $id == 'undefined') {
+            return new Response();
+        }
+        $ville = $villeRepository->find((int)$id);
         $jsonContent = $serializer->serialize($ville, 'json', array('ignored_attributes' => ['lieus']));
         return new Response($jsonContent);
     }
-    #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieu', methods: ['GET'])]
-    public function afficherLieuDeLaVille(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
+    #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieus', methods: ['GET'])]
+    public function afficherLieuDeLaVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
     {
-        $lieus = $lieuRepository->obtenirLieusSelonVille($id);
+        if ($id == null || $id == 'undefined') {
+            return new Response();
+        }
+        $lieus = $villeRepository->find((int)$id)->getLieus();
         $jsonContent = $serializer->serialize($lieus, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
     }
     #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
-    public function afficherLieu(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
+    public function afficherLieu(string $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
     {
-        $lieu = $lieuRepository->find($id);
+        if ($id == null || $id == 'undefined') {
+            return new Response();
+        }
+        $lieu = $lieuRepository->find((int)$id);
         $jsonContent = $serializer->serialize($lieu, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
     }

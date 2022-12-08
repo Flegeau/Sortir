@@ -7,6 +7,20 @@ body {
     overflow: hidden;
 }
 
+#liste_participants {
+    caption-side: top;
+}
+
+.table-dblock {
+    display: block;
+}
+
+.table-scrollable {
+    height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 footer {
     background-color: lightgrey;
     color: black;
