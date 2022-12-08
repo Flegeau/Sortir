@@ -111,6 +111,13 @@ class SortieController extends AbstractController
         $jsonContent = $serializer->serialize($ville, 'json', array('ignored_attributes' => ['lieus']));
         return new Response($jsonContent);
     }
+    #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieu', methods: ['GET'])]
+    public function afficherLieuDeLaVille(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
+    {
+        $lieus = $lieuRepository->obtenirLieusSelonVille($id);
+        $jsonContent = $serializer->serialize($lieus, 'json', array('ignored_attributes' => ['ville', 'sorties']));
+        return new Response($jsonContent);
+    }
     #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
     public function afficherLieu(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
     {

@@ -70,13 +70,13 @@ class SortieType extends AbstractType
                 'choice_label' => 'nom',
                 'mapped' => false,
                 'required' => true)
-            )
+            )/*
             ->add('lieu', EntityType::class, array(
                 'class' => Lieu::class,
                 'label' => 'Lieu : ',
                 'choice_label' => 'nom',
                 'required' => true)
-            )
+            )*/
             ->add('ajouterLieu', ButtonType::class, array(
                 'label' => '+',
                 'attr' => array('class' => 'bi bi-plus')
