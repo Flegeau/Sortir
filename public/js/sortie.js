@@ -33,19 +33,23 @@ function ajaxVille() {
         dataType: "json",
         success: function(data) {
             afficherListeLieus(data);
+            ajaxLieu();
         }
     });
 }
 
 function ajaxLieu() {
-    $.ajax({
-        method: "GET",
-        url: "sortie_lieu/" + $('#sortie_lieu').val(),
-        dataType: "json",
-        success: function(data) {
-            afficherInfosLieu(data);
-        }
-    });
+    let id = $('#sortie_lieu').val();
+    if (id != null) {
+        $.ajax({
+            method: "GET",
+            url: "sortie_lieu/" + id,
+            dataType: "json",
+            success: function(data) {
+                afficherInfosLieu(data);
+            }
+        });
+    }
 }
 
 function afficherInfosVille(data) {
@@ -58,7 +62,6 @@ function afficherListeLieus(data) {
     if (data.length > 0) {
         for (let i = 0; i < data.length; i++) {
             let option = document.createElement("option");
-            console.log(data[i]);
             option.text = data[i]['nom'];
             option.value = data[i]['id'];
             select.append(option);
