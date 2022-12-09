@@ -17,17 +17,19 @@
             </li>
             {% endif %}
             <li class="nav-item m-1">
-                <a href="#" class="nav-link" aria-current="page">
+                <a href="{{ path('app_sortie_list') }}" class="nav-link" aria-current="page">
                     Accueil
                 </a>
             </li>
+            {% if app.user != null %}
             <li class="nav-item m-1">
-                <a href="#" class="nav-link" aria-current="page">
+                <a href="{{ path('app_participant_show',{id:app.user.id}) }}" class="nav-link" aria-current="page">
                     Mon profil
                 </a>
             </li>
+            {% endif %}
             <li class="nav-item m-1">
-                <a href="#" class="nav-link" aria-current="page">
+                <a href="{{ path('app_login') }}" class="nav-link" aria-current="page">
                     Se déconnecter
                 </a>
             </li>

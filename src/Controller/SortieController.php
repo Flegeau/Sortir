@@ -53,7 +53,7 @@ class SortieController extends AbstractController {
             }
             $sortieRepository->save($sortie, true);
 
-            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('sortie/new.html.twig', [
@@ -83,15 +83,11 @@ class SortieController extends AbstractController {
             }
             if (!empty($_POST['datestart'])) {
                 $datestart = $_POST['datestart'];
-//                var_dump($datestart);
                 $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateStart($datestart));
-//                var_dump($sortieRepository->findByDateStart($datestart));
             }
             if (!empty($_POST['dateend'])) {
                 $dateend = $_POST['dateend'];
-//                var_dump($dateend);
                 $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateEnd($dateend));
-//                var_dump($sortieRepository->findByDateEnd($dateend));
             }
             if (!empty($_POST['filter'])) {
                 if (in_array("organisateur", $_POST['filter'])) {
@@ -106,9 +102,6 @@ class SortieController extends AbstractController {
                 if (in_array("passees", $_POST['filter'])) {
                     $sortie = $this->arrayFusion($sortie, $sortieRepository->findPasse());
                 }
-                if (in_array("inscrit", $_POST['filter']) && in_array("non-inscrit", $_POST['filter'])) {
-                    $sortie = null;
-                }
             }
         }
         return $this->render('sortie/list.html.twig', [
@@ -119,8 +112,7 @@ class SortieController extends AbstractController {
 
 
     #[Route('/{id}/modifier', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository,
-                         LieuRepository $lieuRepository): Response {
+    public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository, LieuRepository $lieuRepository): Response {
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
         $lieus = $sortie->getLieu()->getVille()->getLieus();
@@ -128,7 +120,7 @@ class SortieController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $sortieRepository->save($sortie, true);
 
-            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('sortie/edit.html.twig', [
@@ -138,33 +130,59 @@ class SortieController extends AbstractController {
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
+    #[Route('/accueil', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
         }
 
-        return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_publish', methods: ['POST'])]
+    public function publish(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+//        }
+
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_in', methods: ['POST'])]
+    public function inscription(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $sortieRepository->remove($sortie, true);
+//        }
+
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_out', methods: ['POST'])]
+    public function desitement(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $sortieRepository->remove($sortie, true);
+//        }
+
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
 
     //Utilisé par appel Ajax
     #[Route('/sortie_ville/{id}', name: 'app_sortie_ville', methods: ['GET'])]
-    public function afficherVille(int $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
-    {
+    public function afficherVille(int $id, SerializerInterface $serializer, VilleRepository $villeRepository): Response {
         $ville = $villeRepository->find($id);
         $jsonContent = $serializer->serialize($ville, 'json', array('ignored_attributes' => ['lieus']));
         return new Response($jsonContent);
     }
+
     #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieus', methods: ['GET'])]
-    public function afficherLieuDeLaVille(int $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
-    {
+    public function afficherLieuDeLaVille(int $id, SerializerInterface $serializer, VilleRepository $villeRepository): Response {
         $lieus = $villeRepository->find($id)->getLieus();
         $jsonContent = $serializer->serialize($lieus, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
     }
+
     #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
-    public function afficherLieu(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
-    {
+    public function afficherLieu(int $id, SerializerInterface $serializer, LieuRepository $lieuRepository): Response {
         $lieu = $lieuRepository->find($id);
         $jsonContent = $serializer->serialize($lieu, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
@@ -174,7 +192,7 @@ class SortieController extends AbstractController {
         $result = [];
         foreach ($array2 as $sortie) {
             if (in_array($sortie, $array1)) {
-                array_push($result, $sortie);
+                $result[] = $sortie;
             }
         }
         return $result;

@@ -89,10 +89,10 @@
                         <td>
                             {% if is_granted('SHOW_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Afficher</label></a> {% endif %}
                             {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Modifier</label></a> {% endif %}
-                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Publier</label></a> {% endif %}
-                            {% if is_granted('CANCEL_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Annuler</label></a> {% endif %}
-                            {% if is_granted('IN_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
-                            {% if is_granted('OUT_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_publish',{id:sortie.id}) }}"><label>Publier</label></a> {% endif %}
+                            {% if is_granted('CANCEL_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_delete',{id:sortie.id}) }}"><label>Annuler</label></a> {% endif %}
+                            {% if is_granted('IN_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_in',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
+                            {% if is_granted('OUT_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_out',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
                         </td>
                     </tr>
                     {% endif %}
