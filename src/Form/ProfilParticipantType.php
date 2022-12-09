@@ -7,6 +7,7 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ProfilParticipantType extends AbstractType
 {
@@ -38,6 +40,12 @@ class ProfilParticipantType extends AbstractType
             ->add('prenom',TextType::class)
             ->add('telephone',TextType::class)
             ->add('pseudo',TextType::class)
+       /*     ->add('roles', ChoiceType::class, array(
+                'choices'   => array(
+                foreach ($particpant as &$value)
+                ),
+                'choice_value' => 'roles',
+                'placeholder' => 'Choisissez ...'))*/
             ->add('campus', EntityType::class,
                 [
                     'class' => Campus::class,
