@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>Participant</h1>
-
+    <img src="{{ asset('uploads/photos/' ~ participant.photo) }}" alt="profil picture">
     <table class="table">
         <tbody>
             <tr>
@@ -25,11 +25,11 @@
             </tr>
             <tr>
                 <th>Mail</th>
-                <td>{{ participant.mail }}</td>
+                <td>{{ participant.email }}</td>
             </tr>
             <tr>
                 <th>MotDePasse</th>
-                <td>{{ participant.motDePasse }}</td>
+                <td>{{ participant.password }}</td>
             </tr>
             <tr>
                 <th>Pseudo</th>
@@ -42,9 +42,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_participant_index') }}">back to list</a>
-
     <a href="{{ path('app_participant_edit', {'id': participant.id}) }}">edit</a>
-
-    {{ include('participant/_delete_form.html.twig') }}
 {% endblock %}

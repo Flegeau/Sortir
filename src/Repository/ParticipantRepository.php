@@ -33,6 +33,11 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         }
     }
 
+    public function update(Participant $entity): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function remove(Participant $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
