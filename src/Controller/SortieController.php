@@ -89,6 +89,8 @@ class SortieController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $iidetz = (int)$request->request->get('sortie')['lieu'];
+            var_dump($iidetz);
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
             $sortie->setLieu($lieu);
             if ($form->get('publier')->isClicked()) {

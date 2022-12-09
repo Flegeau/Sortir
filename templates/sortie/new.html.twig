@@ -48,7 +48,7 @@
             <div class="mb-3 input-group" id="div_lieu">
                 <select id="sortie_lieu" name="sortie[lieu]" class="form-select" required="required"></select>
                 <span class="input-group-btn ms-2">
-                    <a class="btn" onclick="ajouterUnNouveauLieu()"><strong>+</strong></a>
+                    <a href="{{ path('app_lieu_new') }}" target="_blank" class="btn"><strong>+</strong></a>
                 </span>
             </div>
         </div>
@@ -74,6 +74,7 @@
     {{ form_widget(form.publier) }}
     <a href="{{ path('app_sortie_index') }}" class="btn btn-primary" role="button">Annuler</a>
 </div>
+{{ form_rest(form) }}
 {{ form_end(form) }}
 {% endblock %}
 
