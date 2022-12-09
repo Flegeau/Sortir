@@ -56,7 +56,7 @@ class ParticipantController extends AbstractController
     public function edit(Request $request, Participant $participant, ParticipantRepository $participantRepository, UserPasswordHasherInterface $participantPasswordHasher,SluggerInterface $slugger): Response
     {
         // $participant
-        $form = $this->createForm(ProfilParticipantType::class, $participant);
+        $form = $this->createForm(ProfilParticipantType::class, $this->getUser());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
