@@ -21,7 +21,7 @@ class LieuController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_lieu_new', methods: ['GET', 'POST'])]
+    #[Route('/nouveau', name: 'app_lieu_new', methods: ['GET', 'POST'])]
     public function new(Request $request, LieuRepository $lieuRepository): Response
     {
         $lieu = new Lieu();
@@ -31,7 +31,8 @@ class LieuController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $lieuRepository->save($lieu, true);
 
-            return $this->redirectToRoute('app_lieu_index', [], Response::HTTP_SEE_OTHER);
+            //return $this->redirectToRoute('app_lieu_index', [], Response::HTTP_SEE_OTHER);
+            return $this->render('lieu/close.html.twig');
         }
 
         return $this->renderForm('lieu/new.html.twig', [

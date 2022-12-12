@@ -4,7 +4,7 @@ window.onload = () => {
         $('#sortie_dateLimiteInscription').attr({'max' : e.target.value.substring(0, 10)});
     });
     $(document).on('change', '#sortie_dateLimiteInscription', function (e) {
-        $('#sortie_dateHeureDebut').attr({'min' : e.target.value + 'T00:00'});
+        $('#sortie_dateHeureDebut').attr({'min' : e.target.value + ' 00:00'});
     });
     $(document).on('change', '#sortie_lieu', function() {
         ajaxLieu();
@@ -14,13 +14,14 @@ window.onload = () => {
 function parDefault() {
     let dateSortie = $('#sortie_dateHeureDebut');
     let dateFin = $('#sortie_dateLimiteInscription');
-    dateSortie.attr({'min' : dateFin.val() + 'T00:00'});
+    dateSortie.attr({'min' : dateFin.val() + ' 00:00'});
     dateFin.attr({'max' : dateSortie.val().substring(0, 10)});
     $('#sortie_ville').parent().parent().remove();
     ajaxLieu();
 }
 
 //revoir url
+
 function ajaxLieu() {
     $.ajax({
         method: "GET",
@@ -38,8 +39,4 @@ function afficherInfosLieu(data) {
         $('#sortie_latitude').val(data['latitude']);
         $('#sortie_longitude').val(data['longitude']);
     }
-}
-
-function ajouterUnNouveauLieu() {
-    alert('création nouveau lieu');
 }

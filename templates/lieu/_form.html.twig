@@ -1,4 +1,40 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row justify-content-around mt-5">
+    <div class="col-6">
+        <div class="mb-3">
+            {{ form_row(form.nom) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.rue) }}
+        </div>
+        <div class="mb-3">
+            <div class="row justify-content-around">
+                <div class="col">
+                    {{ form_label(form.latitude) }}
+                    {{ form_widget(form.latitude) }}
+                </div>
+                <div class="col">
+                    {{ form_label(form.longitude) }}
+                    {{ form_widget(form.longitude) }}
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.ville) }}
+        </div>
+        <div class="row">
+            <div class="mt-4 mb-5">
+                <div id="groupe-boutons">
+                    <div class="bouton">
+                        {{ form_widget(form.enregistrer) }}
+                    </div>
+                    <div class="bouton">
+                        {{ form_widget(form.annuler) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ form_rest(form) }}
 {{ form_end(form) }}

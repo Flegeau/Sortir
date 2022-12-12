@@ -114,8 +114,39 @@ body {
     color: black;
 }
 
+#groupe-boutons
+{
+    width:100%;
+    text-align: center;
+}
+
+.bouton
+{
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 .container-fluid {
     overflow: hidden;
+}
+
+.w-fit {
+    width: fit-content;
+}
+
+#liste-participants {
+    caption-side: top;
+}
+
+.table-dblock {
+    display: block;
+}
+
+.table-scrollable {
+    height: 150px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 footer {

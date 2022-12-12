@@ -1,11 +1,7 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}New Lieu{% endblock %}
-
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% block title %}Lieu{% endblock %}
 {% block body %}
-    <h1>Create new Lieu</h1>
-
-    {{ include('lieu/_form.html.twig') }}
-
-    <a href="{{ path('app_lieu_index') }}">back to list</a>
+<h1 class="text-center mt-3">Créer un lieu</h1>
+{{ include('lieu/_form.html.twig') }}
 {% endblock %}

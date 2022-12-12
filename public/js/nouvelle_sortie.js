@@ -8,20 +8,15 @@ window.onload = () => {
         ajaxLieu();
     });
     $(document).on('change', '#sortie_dateHeureDebut', function (e) {
-        $('#sortie_dateLimiteInscription').attr({'max' : e.target.value.substring(0, 10)});
+        controlerDateSortie(e);
     });
     $(document).on('change', '#sortie_dateLimiteInscription', function (e) {
-        $('#sortie_dateHeureDebut').attr({'min' : e.target.value + 'T00:00'});
+        controlerDateFin(e);
     });
 }
 
 function parDefault() {
-    let minutes = $('<span>').html('minutes');
-    $('#sortie_duree').after(minutes);
-    creerElementLieu();
-    creerElementCodePostal();
-    ajaxVille();
-    ajaxLieu();
+    $('#sortie_ville').attr('required', 'required');
 }
 
 function ajaxVille() {
@@ -72,29 +67,6 @@ function afficherListeLieus(data) {
     }
 }
 
-function creerElementCodePostal() {
-    let parent = $('#div_codePostal');
-    let label = $('<label>', {'class': 'col-form-label col-sm-2 required', 'for': 'sortie_codePostal'}).html('Code postal : ');
-    let divCol = $('<div>', {'class': 'col-sm-10'});
-    let input = $('<input>', {'type': 'text', 'id': 'sortie_codePostal', 'name': 'sortie[codePostal]',
-        'required': 'required', 'readonly': 'readonly', 'class': 'form-control'});
-
-    parent.append(label);
-    parent.append(divCol);
-    divCol.append(input);
-}
-
-function creerElementLieu() {
-    let parent = $('#div_lieu');
-    let label = $('<label>', {'class': 'col-form-label col-sm-2 required', 'for': 'sortie_lieu'}).html('Lieu : ');
-    let divCol = $('<div>', {'class': 'col-sm-10'});
-    let select = $('<select>', {'id': 'sortie_lieu', 'name': 'sortie[lieu]', 'class': 'form-select'});
-
-    parent.append(label);
-    parent.append(divCol);
-    divCol.append(select);
-}
-
 function afficherInfosLieu(data) {
     if (data != null) {
         $('#sortie_rue').val(data['rue']);
@@ -109,6 +81,14 @@ function viderInfosLieu() {
     $('#sortie_longitude').val('');
 }
 
-function ajouterUnNouveauLieu() {
-    alert('création nouveau lieu');
+function controlerDateSortie(e) {
+    let dateFin = $('#sortie_dateLimiteInscription');
+    dateFin.remove('max');
+    dateFin.attr({'max' : e.target.value.substring(0, 10)});
+}
+
+function controlerDateFin(e) {
+    let dateSortie = $('#sortie_dateHeureDebut');
+    dateSortie.remove('min');
+    dateSortie.attr({'min' : e.target.value + ' 00:00'});
 }

@@ -3,85 +3,79 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
-<h1>Afficher une sortie</h1>
+<h1 class="text-center mt-3">Afficher une sortie</h1>
 
-<table class="table">
-    <tbody>
-        <tr>
-            <th>Nom de la sortie : </th>
-            <td>{{ sortie.nom }}</td>
-        </tr>
-        <tr>
-            <th>Date et heure de la sortie : </th>
-            <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</td>
-        </tr>
-        <tr>
-            <th>Date limite d'inscription : </th>
-            <td>{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/Y') : '' }}</td>
-        </tr>
-        <tr>
-            <th>Nombre de places : </th>
-            <td>{{ sortie.nbInscriptionsMax }}</td>
-        </tr>
-        <tr>
-            <th>Durée : </th>
-            <td>{{ sortie.duree }} minutes</td>
-        </tr>
-        <tr>
-            <th>Description et infos : </th>
-            <td>{{ sortie.infoSortie }}</td>
-        </tr>
-        <tr>
-            <th>Campus : </th>
-            <td>{{ sortie.campus.nom }}</td>
-        </tr>
-        <tr>
-            <th>Lieu : </th>
-            <td>{{ sortie.lieu.nom }} à {{ sortie.lieu.ville.nom }}</td>
-        </tr>
-        <tr>
-            <th>Rue : </th>
-            <td>{{ sortie.lieu.rue }}</td>
-        </tr>
-        <tr>
-            <th>Code postal : </th>
-            <td>{{ sortie.lieu.ville.nom }}</td>
-        </tr>
-        <tr>
-            <th>Latitude : </th>
-            <td>{{ sortie.lieu.latitude }}</td>
-        </tr>
-        <tr>
-            <th>Longitude : </th>
-            <td>{{ sortie.lieu.longitude }}</td>
-        </tr>
-    </tbody>
-</table>
-
-{% if sortie.participants|length > 1 %}
-<table class="table">
-    <thead>
-        <tr>
-            <td>Pseudo</td>
-            <td>Nom</td>
-        </tr>
-    </thead>
-    <tbody>
-        {% for participant in sortie.participants %}
-        {% if participant.id != sortie.organisateur.id %}
-        <tr>
-            <td>{{ participant.pseudo }}</td>
-            <td>{{ participant.prenom }} {{ participant.nom|upper }}</td>
-        </tr>
-        {% endif  %}
-        {% endfor %}
-    </tbody>
-</table>
-{% else  %}
-<p>Aucun participant pour le moment.</p>
-{% endif %}
-
-<a href="{{ path('app_sortie_list') }}">back to list</a>
-
-<a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>
+<div class="row justify-content-around mt-5">
+    <div class="col-4">
+        <div class="mb-3">
+            <label class="form-label"><strong>Nom de la sortie :</strong> {{ sortie.nom }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">
+                <strong>Date et heure de la sortie :</strong> {{ sortie.dateHeureDebut ?
+                sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">
+                <strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription ?
+                sortie.dateLimiteInscription|date('d/m/Y') : '' }}
+            </label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Durée :</strong> {{ sortie.duree }} minutes</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Nombre de places :</strong> {{ sortie.nbInscriptionsMax }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Descriptions et infos :</strong> <br/>
+            {{ sortie.infoSortie }}</label>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="mb-3">
+            <label class="form-label"><strong>Campus :</strong> {{ sortie.campus.nom }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Lieu :</strong> {{ sortie.lieu.nom }} à {{ sortie.lieu.ville.nom|upper }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Rue :</strong> {{ sortie.lieu.rue }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Code postal :</strong> {{ sortie.lieu.ville.nom }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Latitude :</strong> {{ sortie.lieu.latitude }}</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"><strong>Longitude :</strong> {{ sortie.lieu.longitude }}</label>
+        </div>
+        <div class="mb-3 w-fit">
+        {% if sortie.participants|length > 1 %}
+            <table id="liste-participants" class="table table-striped">
+                <caption>Liste des participants :</caption>
+                <thead class="table-dblock">
+                <tr>
+                    <th>Pseudo</th>
+                    <th>Nom</th>
+                </tr>
+                </thead>
+                <tbody class="table-dblock table-scrollable">
+                {% for participant in sortie.participants %}
+                    {% if participant.id != sortie.organisateur.id %}
+                        <tr>
+                            <td>{{ participant.pseudo }}</td>
+                            <td>{{ participant.prenom }} {{ participant.nom|upper }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucune inscription pour le moment.</p>
+        {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

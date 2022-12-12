@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
@@ -16,15 +17,39 @@ class Lieu
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le nom doit dépasser {{ limit }} caractères',
+        maxMessage: 'Le nom ne peut dépasser {{ limit }} caractères'
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'La rue doit dépasser {{ limit }} caractères',
+        maxMessage: 'La rue ne peut dépasser {{ limit }} caractères'
+    )]
     private ?string $rue = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        minMessage: 'La latitude doit dépasser {{ limit }} caractères'
+    )]
     private ?float $latitude = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        minMessage: 'La longitude doit dépasser {{ limit }} caractères'
+    )]
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]
