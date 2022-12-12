@@ -32,8 +32,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/', name: 'app_sortie_index', methods: ['GET'])]
-    public function index(SortieRepository $sortieRepository): Response
-    {
+    public function index(SortieRepository $sortieRepository): Response {
         return $this->render('sortie/index.html.twig', [
             'sorties' => $sortieRepository->findAll(),
         ]);
@@ -69,7 +68,7 @@ class SortieController extends AbstractController
             $sortieRepository->save($sortie, true);
 
             $this->addFlash('success', $message);
-            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('sortie/new.html.twig', [
@@ -78,16 +77,58 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_sortie_show', requirements: ['id'=> '\d+'], methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
         if (!$this->service->estAffichable($sortie)) {
-            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
         ]);
     }
+
+    #[Route('/accueil', name: 'app_sortie_list', methods: ['GET', 'POST'])]
+    public function list(SortieRepository $sortieRepository, CampusRepository $campusRepository): Response {
+        $sortie = $sortieRepository->findAllOrder();
+        if (!empty($_POST['campus']) || !empty($_POST['sortiename']) || !empty($_POST['datestart']) || !empty($_POST['dateend']) || !empty($_POST['filter'])) {
+            if (!empty($_POST['campus'])) {
+                $campus = $_POST['campus'];
+                    $sortie = $this->arrayFusion($sortie, $sortieRepository->findByCampus($campus));
+            }
+            if (!empty($_POST['sortiename'])) {
+                $keyword = $_POST['sortiename'];
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->search($keyword));
+            }
+            if (!empty($_POST['datestart'])) {
+                $datestart = $_POST['datestart'];
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateStart($datestart));
+            }
+            if (!empty($_POST['dateend'])) {
+                $dateend = $_POST['dateend'];
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateEnd($dateend));
+            }
+            if (!empty($_POST['filter'])) {
+                if (in_array("organisateur", $_POST['filter'])) {
+                    $sortie = $this->arrayFusion($sortie, $sortieRepository->findMySortie($this->getUser()));
+                }
+                if (in_array("inscrit", $_POST['filter'])) {
+                    $sortie = $this->arrayFusion($sortie, $sortieRepository->findInscrit($this->getUser()));
+                }
+                if (in_array("non-inscrit", $_POST['filter'])) {
+                    $sortie = $this->arrayFusion($sortie, $sortieRepository->findNonInscrit($this->getUser()));
+                }
+                if (in_array("passees", $_POST['filter'])) {
+                    $sortie = $this->arrayFusion($sortie, $sortieRepository->findPasse());
+                }
+            }
+        }
+        return $this->render('sortie/list.html.twig', [
+            'sorties' => $sortie,
+            'campus' => $campusRepository->findAll(),
+        ]);
+    }
+
 
     #[Route('/{id}/modifier', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository,
@@ -101,7 +142,7 @@ class SortieController extends AbstractController
         if ($sortie->getOrganisateur()->getId() === 0 ||
             !$this->service->estModifiable($sortie))
         {
-            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -119,7 +160,7 @@ class SortieController extends AbstractController
             $sortieRepository->save($sortie, true);
 
             $this->addFlash('success', $message);
-            return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('sortie/edit.html.twig', [
             'sortie' => $sortie,
@@ -136,7 +177,34 @@ class SortieController extends AbstractController
             $this->addFlash('notice', self::MESSAGE_SUPPRESSION);
         }
 
-        return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_publish', methods: ['POST'])]
+    public function publish(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+//        }
+
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_in', methods: ['POST'])]
+    public function inscription(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $sortieRepository->remove($sortie, true);
+//        }
+
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/accueil', name: 'app_sortie_out', methods: ['POST'])]
+    public function desitement(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $sortieRepository->remove($sortie, true);
+//        }
+
+        return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
 
     //Utilisé par appel Ajax
@@ -150,6 +218,7 @@ class SortieController extends AbstractController
         $jsonContent = $serializer->serialize($ville, 'json', array('ignored_attributes' => ['lieus']));
         return new Response($jsonContent);
     }
+
     #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieus', methods: ['GET'])]
     public function afficherLieusDeLaVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
     {
@@ -160,6 +229,7 @@ class SortieController extends AbstractController
         $jsonContent = $serializer->serialize($lieus, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
     }
+
     #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
     public function afficherLieu(string $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
     {
@@ -169,5 +239,15 @@ class SortieController extends AbstractController
         $lieu = $lieuRepository->find((int)$id);
         $jsonContent = $serializer->serialize($lieu, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
+    }
+
+    public function arrayFusion($array1, $array2){
+        $result = [];
+        foreach ($array2 as $sortie) {
+            if (in_array($sortie, $array1)) {
+                $result[] = $sortie;
+            }
+        }
+        return $result;
     }
 }
