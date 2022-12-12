@@ -139,7 +139,7 @@ class SortieController extends AbstractController
         return new Response($jsonContent);
     }
     #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieus', methods: ['GET'])]
-    public function afficherLieuDeLaVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
+    public function afficherLieusDeLaVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
     {
         if ($id == null || $id == 'undefined') {
             return new Response();

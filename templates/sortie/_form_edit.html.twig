@@ -14,12 +14,12 @@
         <div class="mb-3">
             <div class="row justify-content-around">
                 <div class="col">
-                    {{ form_label(form.nbInscriptionsMax) }}
-                    {{ form_widget(form.nbInscriptionsMax) }}
-                </div>
-                <div class="col">
                     {{ form_label(form.duree) }}
                     {{ form_widget(form.duree) }}
+                </div>
+                <div class="col">
+                    {{ form_label(form.nbInscriptionsMax) }}
+                    {{ form_widget(form.nbInscriptionsMax) }}
                 </div>
             </div>
         </div>
@@ -35,9 +35,9 @@
             <label class="form-label required" for="sortie_lieu">Lieu</label>
             <div class="mb-3 input-group">
                 <select id="sortie_lieu" name="sortie[lieu]" class="form-select" required="required">
-                    {% for lieu in lieus %}
-                        <option value="{{ lieu.id }}" {{ sortie.lieu.id is same as(lieu.id) ? 'selected' : '' }}>{{ lieu.nom }}</option>
-                    {% endfor %}
+                {% for lieu in lieus %}
+                    <option value="{{ lieu.id }}" {{ sortie.lieu.id is same as(lieu.id) ? 'selected' : '' }}>{{ lieu.nom }}</option>
+                {% endfor %}
                 </select>
                 <span class="input-group-btn ms-2">
                     <a href="{{ path('app_lieu_new') }}" target="_blank" class="btn"><strong>+</strong></a>

@@ -92,7 +92,3 @@ function controlerDateFin(e) {
     dateSortie.remove('min');
     dateSortie.attr({'min' : e.target.value + ' 00:00'});
 }
-
-function ajouterUnNouveauLieu() {
-    alert('création nouveau lieu');
-}

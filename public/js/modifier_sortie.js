@@ -21,6 +21,7 @@ function parDefault() {
 }
 
 //revoir url
+
 function ajaxLieu() {
     $.ajax({
         method: "GET",
@@ -38,8 +39,4 @@ function afficherInfosLieu(data) {
         $('#sortie_latitude').val(data['latitude']);
         $('#sortie_longitude').val(data['longitude']);
     }
-}
-
-function ajouterUnNouveauLieu() {
-    alert('création nouveau lieu');
 }
