@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\Campus;
 use App\Entity\Sortie;
 use App\Entity\Ville;
+use App\Repository\CampusRepository;
+use App\Repository\VilleRepository;
 use DateTime;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -67,6 +69,10 @@ class SortieType extends AbstractType
                 'label' => 'Campus',
                 'choice_label' => 'nom',
                 'choice_value' => 'id',
+                'query_builder' => function(CampusRepository $c) {
+                    return $c->createQueryBuilder('c')
+                        ->orderBy('c.nom', 'asc');
+                },
                 'required' => true)
             )
             ->add('ville', EntityType::class, array(
@@ -74,6 +80,10 @@ class SortieType extends AbstractType
                 'label' => 'Ville',
                 'choice_label' => 'nom',
                 'choice_value' => 'id',
+                'query_builder' => function(VilleRepository $v) {
+                    return $v->createQueryBuilder('v')
+                        ->orderBy('v.nom', 'asc');
+                },
                 'mapped' => false,
                 'required' => false)
             )
