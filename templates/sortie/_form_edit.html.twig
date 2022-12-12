@@ -12,17 +12,13 @@
             {{ form_row(form.dateLimiteInscription) }}
         </div>
         <div class="mb-3">
-            <div class="mb-3">
-                {{ form_label(form.nbInscriptionsMax) }}
-                <div class="col-sm-4">
+            <div class="row justify-content-around">
+                <div class="col">
+                    {{ form_label(form.nbInscriptionsMax) }}
                     {{ form_widget(form.nbInscriptionsMax) }}
                 </div>
-            </div>
-        </div>
-        <div class="mb-3">
-            <div class="mb-3">
-                {{ form_label(form.duree) }}
-                <div class="col-sm-4">
+                <div class="col">
+                    {{ form_label(form.duree) }}
                     {{ form_widget(form.duree) }}
                 </div>
             </div>
@@ -59,10 +55,16 @@
             </div>
         </div>
         <div class="mb-3">
-            {{ form_row(form.latitude) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.longitude) }}
+            <div class="row justify-content-around">
+                <div class="col">
+                    {{ form_label(form.latitude) }}
+                    {{ form_widget(form.latitude) }}
+                </div>
+                <div class="col">
+                    {{ form_label(form.longitude) }}
+                    {{ form_widget(form.longitude) }}
+                </div>
+            </div>
         </div>
     </div>
 </div>

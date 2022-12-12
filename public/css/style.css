@@ -20,6 +20,10 @@ body {
     overflow: hidden;
 }
 
+.w-fit {
+    width: fit-content;
+}
+
 #liste-participants {
     caption-side: top;
 }

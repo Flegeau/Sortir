@@ -29,26 +29,22 @@ class Sortie
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotBlank]
+    #[Assert\GreaterThan('today')]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 0,
-        minMessage: 'La durée doit être supérieure à {{ limit }}'
-    )]
+    #[Assert\Positive]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotBlank]
+    #[Assert\GreaterThan('today')]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 0,
-        minMessage: 'Le nombre de participants doit être supérieur à {{ limit }}'
-    )]
+    #[Assert\Positive]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
