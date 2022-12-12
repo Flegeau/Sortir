@@ -20,6 +20,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/sortie')]
 class SortieController extends AbstractController
 {
+    private const MESSAGE_CREATION = 'La sortie a été créée';
+    private const MESSAGE_PUBLICATION = 'La sortie a été publiée';
+    private const MESSAGE_MODIFICATION = 'La sortie a été modifiée';
+    private const MESSAGE_SUPPRESSION = 'La sortie a été supprimée';
+
     private ControleSortie $service;
     public function __construct(ControleSortie $service)
     {
@@ -56,10 +61,10 @@ class SortieController extends AbstractController
 
             if ($form->get('enregistrer')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Créée')));
-                $message = 'La sortie a été créée';
+                $message = self::MESSAGE_CREATION;
             } else if ($form->get('publier')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-                $message = 'La sortie a été créée et publiée';
+                $message = self::MESSAGE_PUBLICATION;
             }
             $sortieRepository->save($sortie, true);
 
@@ -104,11 +109,11 @@ class SortieController extends AbstractController
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
             $sortie->setLieu($lieu);
             if ($form->get('enregistrer')->isClicked()) {
-                $message = 'La sortie a été modifiée';
+                $message = self::MESSAGE_MODIFICATION;
             }
             else if ($form->get('publier')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-                $message = 'La sortie a été publiée';
+                $message = self::MESSAGE_PUBLICATION;
             }
 
             $sortieRepository->save($sortie, true);
@@ -128,7 +133,7 @@ class SortieController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
-            $this->addFlash('notice', 'La sortie a été supprimée');
+            $this->addFlash('notice', self::MESSAGE_SUPPRESSION);
         }
 
         return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
