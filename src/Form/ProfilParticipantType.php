@@ -40,12 +40,13 @@ class ProfilParticipantType extends AbstractType
             ->add('prenom',TextType::class)
             ->add('telephone',TextType::class)
             ->add('pseudo',TextType::class)
-       /*     ->add('roles', ChoiceType::class, array(
-                'choices'   => array(
-                foreach ($particpant as &$value)
-                ),
-                'choice_value' => 'roles',
-                'placeholder' => 'Choisissez ...'))*/
+           ->add('roles', ChoiceType::class,[
+                       'choices'  => [
+                           'Utilisateur' => 'ROLE_USER',
+                           'Administrateur' => 'ROLE_ADMIN',
+                       ],
+                       'multiple'=>true
+                ])
             ->add('campus', EntityType::class,
                 [
                     'class' => Campus::class,
