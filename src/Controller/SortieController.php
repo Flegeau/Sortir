@@ -17,8 +17,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 #[Route('/sortie')]
 class SortieController extends AbstractController {
@@ -82,33 +80,35 @@ class SortieController extends AbstractController {
             $filtre = $form->getData();
         }
 
-        if ($filtre->getCampus() != null) {
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findByCampus($filtre->getCampus()->getNom()));
-        }
-        if ($filtre->getNom() != null) {
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->search($filtre->getNom()));
-        }
-        if ($filtre->getDateStart() != null) {
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateStart($filtre->getDateStart()));
-        }
-        if ($filtre->getDateEnd() != null) {
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateEnd($filtre->getDateEnd()));
-        }
-        if ($filtre->getOrganisateur()) {
-            var_dump($filtre->getOrganisateur());
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findMySortie($this->getUser()));
-        }
-        if ($filtre->getInscrit()) {
-            var_dump($filtre->getInscrit());
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findInscrit($this->getUser()));
-        }
-        if ($filtre->getNonInscrit()) {
-            var_dump($filtre->getNonInscrit());
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findNonInscrit($this->getUser()));
-        }
-        if ($filtre->getPassees()) {
-            var_dump($filtre->getPassees());
-            $sortie = $this->arrayFusion($sortie, $sortieRepository->findPasse());
+        if (isset($filtre)) {
+            if ($filtre->getCampus() != null) {
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByCampus($filtre->getCampus()->getNom()));
+            }
+            if ($filtre->getNom() != null) {
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->search($filtre->getNom()));
+            }
+            if ($filtre->getDateStart() != null) {
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateStart($filtre->getDateStart()));
+            }
+            if ($filtre->getDateEnd() != null) {
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateEnd($filtre->getDateEnd()));
+            }
+            if ($filtre->getOrganisateur()) {
+                var_dump($filtre->getOrganisateur());
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findMySortie($this->getUser()));
+            }
+            if ($filtre->getInscrit()) {
+                var_dump($filtre->getInscrit());
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findInscrit($this->getUser()));
+            }
+            if ($filtre->getNonInscrit()) {
+                var_dump($filtre->getNonInscrit());
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findNonInscrit($this->getUser()));
+            }
+            if ($filtre->getPassees()) {
+                var_dump($filtre->getPassees());
+                $sortie = $this->arrayFusion($sortie, $sortieRepository->findPasse());
+            }
         }
 
         return $this->renderForm('sortie/list.html.twig', [
@@ -205,7 +205,7 @@ class SortieController extends AbstractController {
         return new Response($jsonContent);
     }
 
-    public function arrayFusion($array1, $array2){
+    public function arrayFusion($array1, $array2): array {
         $result = [];
         foreach ($array2 as $sortie) {
             if (in_array($sortie, $array1)) {
