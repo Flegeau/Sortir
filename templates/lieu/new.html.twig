@@ -6,37 +6,6 @@
 {% block body %}
 <h1 class="text-center mt-3">Créer un lieu</h1>
 
-{{ form_start(form) }}
-<div class="row justify-content-around mt-5">
-    <div class="col-8">
-        <div class="mb-3">
-            {{ form_row(form.nom) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.rue) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.latitude) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.longitude) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.ville) }}
-        </div>
-        <div class="mt-5 mb-3">
-            <div id="groupe-boutons">
-                <div class="bouton">
-                    {{ form_widget(form.enregistrer) }}
-                </div>
-                <div class="bouton">
-                    {{ form_widget(form.annuler) }}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{{ form_rest(form) }}
-{{ form_end(form) }}
+{{ include('lieu/_form.html.twig') }}
 
 {% endblock %}
