@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Etat;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,10 +46,16 @@ class SortieRepository extends ServiceEntityRepository
      * @return Sortie[] Returns an array of All Sortie objects in date limite inscription order of date
      */
     public function findAllOrder(): array {
-        return $this->createQueryBuilder('s')
+        return $this->createQueryBuilder("s")
+            ->select("s", "e", "l", "c", "o")
+            ->join("s.etat", "e")
+            ->join("s.lieu", "l")
+            ->join("s.campus", "c")
+            ->join("s.organisateur", "o")
+            ->where("s.etat = e.id AND s.lieu = l.id AND s.campus = c.id AND s.organisateur = o.id AND e.libelle != 'Annulée' AND e.libelle != 'Historisée'")
             ->orderBy('s.dateLimiteInscription', 'DESC')
             ->getQuery()
-            ->getResult()
+            ->getResult(Query::HYDRATE_OBJECT)
             ;
     }
 
@@ -152,11 +161,9 @@ class SortieRepository extends ServiceEntityRepository
      */
     public function search($keyword): array {
         $em = $this->getEntityManager();
-        $dql = "
-                SELECT s FROM App\Entity\Sortie s
+        $dql = "SELECT s FROM App\Entity\Sortie s
                 WHERE s.nom LIKE :nom
-                ORDER BY s.dateLimiteInscription DESC
-        ";
+                ORDER BY s.dateLimiteInscription DESC";
         $stmt = $em->createQuery($dql);
         $stmt->setParameters(
             array(
@@ -174,4 +181,7 @@ class SortieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function cancel(Sortie $sortie, Etat $etat) {
+        $sortie->setEtat($etat);
+    }
 }

@@ -8,12 +8,12 @@
     border: 2px dashed #3a57af;
     display: inline-block;
     border-radius: 7px;
-    margin-top: -29%;
+    margin-top: -40%;
     width: 90%;
     height: 300px;
 ">
 
-        <form method="post" class="register-form" style="text-align: center";>
+        <form method="post" class="register-form" style="text-align: center">
             {% if error %}
                 <div class="alert alert-danger">Identifiants Incorrects</div>
             {% endif %}
@@ -34,13 +34,13 @@
             <input type="hidden" name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}">
 
-            <div >
+            <div>
                 <label>
                     <input type="checkbox" name="_remember_me" style="
                            margin-left: -4%;"> Remember me
                 </label><br><br>
                 <a href="{{path('app_forgot_password_request')}}" >Forget password</a><br><br>
-
+            </div>
 
             <button class="btn btn-lg btn-primary" type="submit" style="border-radius: 6px;
     width: 40%;
