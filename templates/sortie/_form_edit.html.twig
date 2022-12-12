@@ -78,10 +78,7 @@
                 {{ form_widget(form.publier) }}
             </div>
             <div class="bouton">
-                <form method="post" action="{{ path('app_sortie_delete', {'id': sortie.id}) }}" onsubmit="return confirm('Confirmez-vous la suppression de la sortie ?');">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
-                    <button class="btn btn-primary">Supprimer la sortie</button>
-                </form>
+                {{ include('sortie/_delete_form.html.twig') }}
             </div>
             <div class="bouton">
                 <a href="{{ path('app_sortie_index') }}" class="btn btn-secondary" role="button">Annuler</a>
