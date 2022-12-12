@@ -3,84 +3,79 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
-<h1>Afficher une sortie</h1>
+<h1 class="text-center mt-3">Afficher une sortie</h1>
 
-<div class="row justify-content-around">
-    <div class="col-5">
+<div class="row justify-content-around mt-5">
+    <div class="col-4">
         <div class="mb-3">
-            <label class="form-label">Nom de la sortie : {{ sortie.nom }}</label>
+            <label class="form-label"><strong>Nom de la sortie :</strong> {{ sortie.nom }}</label>
         </div>
         <div class="mb-3">
             <label class="form-label">
-                Date et heure de la sortie : {{ sortie.dateHeureDebut ?
+                <strong>Date et heure de la sortie :</strong> {{ sortie.dateHeureDebut ?
                 sortie.dateHeureDebut|date('d/m/Y \\à H:i') : '' }}</label>
         </div>
         <div class="mb-3">
             <label class="form-label">
-                Date limite d'inscription : {{ sortie.dateLimiteInscription ?
+                <strong>Date limite d'inscription :</strong> {{ sortie.dateLimiteInscription ?
                 sortie.dateLimiteInscription|date('d/m/Y') : '' }}
             </label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Nombre de places : {{ sortie.nbInscriptionsMax }}</label>
+            <label class="form-label"><strong>Nombre de places :</strong> {{ sortie.nbInscriptionsMax }}</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Durée : {{ sortie.duree }} minutes</label>
+            <label class="form-label"><strong>Durée :</strong> {{ sortie.duree }} minutes</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Descriptions et infos : <br/>
+            <label class="form-label"><strong>Descriptions et infos :</strong> <br/>
             {{ sortie.infoSortie }}</label>
         </div>
     </div>
-    <div class="col-5">
+    <div class="col-4">
         <div class="mb-3">
-            <label class="form-label">Campus : {{ sortie.campus.nom }}</label>
+            <label class="form-label"><strong>Campus :</strong> {{ sortie.campus.nom }}</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Lieu : {{ sortie.lieu.nom }} à {{ sortie.lieu.ville.nom|upper }}</label>
+            <label class="form-label"><strong>Lieu :</strong> {{ sortie.lieu.nom }} à {{ sortie.lieu.ville.nom|upper }}</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Rue : {{ sortie.lieu.rue }}</label>
+            <label class="form-label"><strong>Rue :</strong> {{ sortie.lieu.rue }}</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Code postal : {{ sortie.lieu.ville.nom }}</label>
+            <label class="form-label"><strong>Code postal :</strong> {{ sortie.lieu.ville.nom }}</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Latitude : {{ sortie.lieu.latitude }}</label>
+            <label class="form-label"><strong>Latitude :</strong> {{ sortie.lieu.latitude }}</label>
         </div>
         <div class="mb-3">
-            <label class="form-label">Longitude : {{ sortie.lieu.longitude }}</label>
+            <label class="form-label"><strong>Longitude :</strong> {{ sortie.lieu.longitude }}</label>
         </div>
-    </div>
-<div class="row justify-content-start mt-3">
-    <div class="col-5 ms-5">
-    {% if sortie.participants|length > 1 %}
-        <table id="liste_participants" class="table table-striped">
-            <caption>Liste des participants : </caption>
-            <thead class="table-dblock">
+        <div class="mb-3">
+        {% if sortie.participants|length > 1 %}
+            <table id="liste-participants" class="table table-striped">
+                <caption>Liste des participants :</caption>
+                <thead class="table-dblock">
                 <tr>
                     <th>Pseudo</th>
                     <th>Nom</th>
                 </tr>
-            </thead>
-            <tbody class="table-dblock table-scrollable">
-            {% for participant in sortie.participants %}
-                {% if participant.id != sortie.organisateur.id %}
-                    <tr>
-                        <td>{{ participant.pseudo }}</td>
-                        <td>{{ participant.prenom }} {{ participant.nom|upper }}</td>
-                    </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucun participant inscrit pour le moment.</p>
-    {% endif %}
+                </thead>
+                <tbody class="table-dblock table-scrollable">
+                {% for participant in sortie.participants %}
+                    {% if participant.id != sortie.organisateur.id %}
+                        <tr>
+                            <td>{{ participant.pseudo }}</td>
+                            <td>{{ participant.prenom }} {{ participant.nom|upper }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucune inscription pour le moment.</p>
+        {% endif %}
+        </div>
     </div>
-</div>
-<div>
-    <a href="{{ path('app_sortie_index') }}">back to list</a>
-    <a href="{{ path('app_sortie_edit', {'id': sortie.id}) }}">edit</a>
 </div>
 {% endblock %}

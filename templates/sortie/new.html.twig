@@ -3,79 +3,8 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
-<h1>Créer une sortie</h1>
-{{ form_start(form) }}
-<div class="row justify-content-around">
-    <div class="col-5">
-        <div class="mb-3">
-            {{ form_row(form.nom) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.dateHeureDebut) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.dateLimiteInscription) }}
-        </div>
-        <div class="mb-3">
-            <div class="mb-3">
-                {{ form_label(form.nbInscriptionsMax) }}
-                <div class="col-sm-4">
-                    {{ form_widget(form.nbInscriptionsMax) }}
-                </div>
-            </div>
-        </div>
-        <div class="mb-3">
-            <div class="mb-3">
-                {{ form_label(form.duree) }}
-                <div class="col-sm-4">
-                    {{ form_widget(form.duree) }}
-                </div>
-            </div>
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.infoSortie) }}
-        </div>
-    </div>
-    <div class="col-5">
-        <div class="mb-3">
-            {{ form_row(form.campus) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.ville) }}
-        </div>
-        <div class="mb-3">
-            <label class="form-label required" for="sortie_lieu">Lieu</label>
-            <div class="mb-3 input-group" id="div_lieu">
-                <select id="sortie_lieu" name="sortie[lieu]" class="form-select" required="required"></select>
-                <span class="input-group-btn ms-2">
-                    <a href="{{ path('app_lieu_new') }}" target="_blank" class="btn"><strong>+</strong></a>
-                </span>
-            </div>
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.rue) }}
-        </div>
-        <div class="mb-3">
-            <div class="mb-3">
-                <label class="form-label required" for="sortie_codePostal">Code postal</label>
-                <input type="text" id="sortie_codePostal" name="sortie[codePostal]" readonly="readonly" class="form-control">
-            </div>
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.latitude) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.longitude) }}
-        </div>
-    </div>
-</div>
-<div class="row">
-    {{ form_widget(form.enregistrer) }}
-    {{ form_widget(form.publier) }}
-    <a href="{{ path('app_sortie_index') }}" class="btn btn-primary" role="button">Annuler</a>
-</div>
-{{ form_rest(form) }}
-{{ form_end(form) }}
+<h1 class="text-center mt-3">Créer une sortie</h1>
+{{ include('sortie/_form_new.html.twig') }}
 {% endblock %}
 
 {% block javascripts %}

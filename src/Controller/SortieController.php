@@ -37,6 +37,7 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $message = '';
             $organisateur = $participantRepository->find(15);
             $campus = $campusRepository->find((int)$request->request->get('sortie')['campus']);
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
@@ -48,11 +49,14 @@ class SortieController extends AbstractController
 
             if ($form->get('enregistrer')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Créée')));
+                $message = 'La sortie a été créée';
             } else if ($form->get('publier')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                $message = 'La sortie a été créée et publiée';
             }
             $sortieRepository->save($sortie, true);
 
+            $this->addFlash('success', $message);
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -89,15 +93,20 @@ class SortieController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $iidetz = (int)$request->request->get('sortie')['lieu'];
-            var_dump($iidetz);
+            $message = '';
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
             $sortie->setLieu($lieu);
-            if ($form->get('publier')->isClicked()) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+            if ($form->get('enregistrer')->isClicked()) {
+                $message = 'La sortie a été modifiée';
             }
+            else if ($form->get('publier')->isClicked()) {
+                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                $message = 'La sortie a été publiée';
+            }
+
             $sortieRepository->save($sortie, true);
 
+            $this->addFlash('success', $message);
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->renderForm('sortie/edit.html.twig', [
@@ -112,6 +121,7 @@ class SortieController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
             $sortieRepository->remove($sortie, true);
+            $this->addFlash('notice', 'La sortie a été supprimée');
         }
 
         return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);

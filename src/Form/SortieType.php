@@ -66,12 +66,14 @@ class SortieType extends AbstractType
                 'class' => Campus::class,
                 'label' => 'Campus',
                 'choice_label' => 'nom',
+                'choice_value' => 'id',
                 'required' => true)
             )
             ->add('ville', EntityType::class, array(
                 'class' => Ville::class,
                 'label' => 'Ville',
                 'choice_label' => 'nom',
+                'choice_value' => 'id',
                 'mapped' => false,
                 'required' => false)
             )
@@ -108,7 +110,8 @@ class SortieType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sortie::class
+            'data_class' => Sortie::class,
+            'allow_extra_fields' => true
         ]);
     }
 }
