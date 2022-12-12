@@ -241,7 +241,7 @@ class SortieController extends AbstractController
         return new Response($jsonContent);
     }
 
-    public function arrayFusion($array1, $array2){
+    public function arrayFusion($array1, $array2): array {
         $result = [];
         foreach ($array2 as $sortie) {
             if (in_array($sortie, $array1)) {
