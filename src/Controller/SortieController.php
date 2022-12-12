@@ -10,6 +10,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use App\Service\ControleSortie;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,12 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/sortie')]
 class SortieController extends AbstractController
 {
+    private ControleSortie $service;
+    public function __construct(ControleSortie $service)
+    {
+        $this->service = $service;
+    }
+
     #[Route('/', name: 'app_sortie_index', methods: ['GET'])]
     public function index(SortieRepository $sortieRepository): Response
     {
@@ -69,8 +76,7 @@ class SortieController extends AbstractController
     #[Route('/{id}', name: 'app_sortie_show', methods: ['GET'])]
     public function show(Sortie $sortie): Response
     {
-        $nonAffichable = array('Créée', 'Annulée', 'Historisée');
-        if (in_array($sortie->getEtat()->getLibelle(), $nonAffichable)) {
+        if (!$this->service->estAffichable($sortie)) {
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('sortie/show.html.twig', [
@@ -88,7 +94,8 @@ class SortieController extends AbstractController
 
         //Test sur l'id de l'utilisateur à voir
         if ($sortie->getOrganisateur()->getId() === 0 ||
-            $sortie->getEtat()->getLibelle() !== 'Créée') {
+            !$this->service->estModifiable($sortie))
+        {
             return $this->redirectToRoute('app_sortie_index', [], Response::HTTP_SEE_OTHER);
         }
 
