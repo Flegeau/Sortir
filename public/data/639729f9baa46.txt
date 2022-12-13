@@ -1,0 +1,3 @@
+nom;prenom;telephone;email;password;pseudo;actif;roles;campus
+luigi;mario;6060606060;luigi@gmail.com;123456;mario28;true;"ROLE_ADMIN;ROLE_USER";niort
+mario;mario;7070700700;mario@galaxy.com;123456;mario64;true;ROLE_USER;

@@ -14,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-/**
- *@IsGranted("ROLE_ADMIN")
- */
+
 #[Route('/participant')]
 class ParticipantController extends AbstractController
 {
@@ -27,7 +25,9 @@ class ParticipantController extends AbstractController
             'participants' => $participantRepository->findAll(),
         ]);
     }
-
+    /**
+     *@IsGranted("ROLE_ADMIN")
+     */
     #[Route('/new', name: 'app_participant_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ParticipantRepository $participantRepository): Response
     {
@@ -55,6 +55,9 @@ class ParticipantController extends AbstractController
         ]);
     }
 
+    /**
+     *@IsGranted("ROLE_ADMIN")
+     */
     #[Route('/disable/{id}', name: 'app_participant_disable', methods: ['GET'])]
     public function desable(Participant $participant,ParticipantRepository $participantRepository): Response
     {
@@ -111,6 +114,9 @@ class ParticipantController extends AbstractController
         ]);
     }
 
+    /**
+     *@IsGranted("ROLE_ADMIN")
+     */
     #[Route('/delete/{id}', name: 'app_participant_delete', methods: ['POST'])]
     public function delete(Request $request, Participant $participant, ParticipantRepository $participantRepository): Response
     {

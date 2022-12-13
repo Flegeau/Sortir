@@ -7,6 +7,9 @@
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
+    {% if(is_granted("ROLE_ADMIN")) %}
+    <a href="{{ path('app_admin')}}"><i class="fa-sharp fa-solid fa-user-secret fa-2xl"></i></a>
+    {% endif %}
     <div class="row text-center mt-5">
         <h3>Filtrer les sorties</h3>
     </div>

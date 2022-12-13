@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div style="
+    text-align: center;
+    background-color: #ebebeb;
+    border-radius: 10px;
+    width: 20%;
+    margin-left: 10%;
+    height: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+">
+        <div style="
+    border: 2px dashed #3a57af;
+    display: inline-block;
+    border-radius: 7px;
+    margin-top: 3%;
+    width: 90%;
+    height: 220px;
+">
+            <h2> Fichiers utilisateurs à importer : </h2><br>
+        <form action="{{ path('app_admin_upload') }}" method="POST" enctype="multipart/form-data">
+            <i class="fa-sharp fa-solid fa-file-import"></i> <input name="file" type="file"><br><br><br>
+            <button style="
+    border-radius: 6px;
+    width: 30%;
+    background-color: #3a57af;
+    color: #ebebeb;
+    border-color: #ebebeb;" name="submit" value="OK" type="submit">Upload</button>
+        </form><br>
+            <div>
+                <a href="{{ path('app_participant_index') }}"><i class="fa-solid fa-users fa-lg"></i></a>
+                <a style="margin-left: 25%" href="{{ path('app_participant_new') }}"><i class="fa-solid fa-user-plus fa-lg"></i></a>
+            </div>
+
+    </div>
+
+    </div>
+{% endblock %}
