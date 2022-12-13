@@ -83,6 +83,7 @@
             <div class="bouton">
                 {{ form_widget(form.publier) }}
             </div>
+            {{ form_end(form) }}
             <div class="bouton">
                 {{ include('sortie/_delete_form.html.twig') }}
             </div>
@@ -92,4 +93,3 @@
         </div>
     </div>
 </div>
-{{ form_end(form) }}
