@@ -53,12 +53,11 @@ class SortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $message = '';
-            $organisateur = $participantRepository->find(15);
             $campus = $campusRepository->find((int)$request->request->get('sortie')['campus']);
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
 
-            $sortie->setOrganisateur($organisateur);
-            $sortie->addParticipant($organisateur);
+            $sortie->setOrganisateur($this->getUser());
+            $sortie->addParticipant($this->getUser());
             $sortie->setCampus($campus);
             $sortie->setLieu($lieu);
 
@@ -167,7 +166,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie): Response
     {
         if (!$this->getUser()) {
@@ -187,7 +186,7 @@ class SortieController extends AbstractController
     #[Route('/{id}/cancel', name: 'app_sortie_cancel', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function cancel(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
         if ($this->isCsrfTokenValid('cancel'.$sortie->getId(), $request->request->get('_token'))) {
-            if ($sortie->getEtat()->getLibelle() == "Ouverte" || $sortie->getEtat()->getLibelle() == "Clôturée") {
+            if ($this->service->estAnnulable($sortie)) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Annulée')));
                 $sortieRepository->save($sortie, true);
             }
@@ -199,7 +198,7 @@ class SortieController extends AbstractController
     #[Route('/{id}/publish', name: 'app_sortie_publish', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function publish(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
         if ($this->isCsrfTokenValid('publish'.$sortie->getId(), $request->request->get('_token'))) {
-            if ($sortie->getEtat()->getLibelle() == "Créée") {
+            if ($this->service->estModifiable($sortie)) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
                 $sortieRepository->save($sortie, true);
             }
@@ -211,7 +210,7 @@ class SortieController extends AbstractController
     #[Route('/{id}/in', name: 'app_sortie_in', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function inscription(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
         if ($this->isCsrfTokenValid('in'.$sortie->getId(), $request->request->get('_token'))) {
-            if ($sortie->getParticipants()->count() < $sortie->getNbInscriptionsMax()) {
+            if ($this->service->estInscrivable($sortie)) {
                 $sortie->addParticipant($this->getUser());
                 $sortieRepository->save($sortie, true);
             }
@@ -223,7 +222,7 @@ class SortieController extends AbstractController
     #[Route('/{id}/out', name: 'app_sortie_out', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function desitement(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
         if ($this->isCsrfTokenValid('out'.$sortie->getId(), $request->request->get('_token'))) {
-            if ($sortie->getParticipants()->contains($this->getUser())) {
+            if ($this->service->estDesistable($sortie)) {
                 $sortie->removeParticipant($this->getUser());
                 $sortieRepository->save($sortie, true);
             }
