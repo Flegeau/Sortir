@@ -39,6 +39,11 @@ class EtatRepository extends ServiceEntityRepository
         }
     }
 
+    public function findSelonLibelle(string $etat): Etat
+    {
+        return $this->findOneBy(array('libelle' => $etat));
+    }
+
 //    /**
 //     * @return Etat[] Returns an array of Etat objects
 //     */
