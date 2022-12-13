@@ -3,33 +3,38 @@
 <div class="row justify-content-around mt-5">
     <div class="col-5">
         <div class="mb-3">
-            {{ form_row(form.nom) }}
+            <label for="sortie_nom" class="form-label required">Nom de la sortie</label>
+            {{ form_widget(form.nom) }}
         </div>
         <div class="mb-3">
-            {{ form_row(form.dateHeureDebut) }}
+            <label for="sortie_dateHeureDebut" class="form-label required">Date et heure de la sortie</label>
+            {{ form_widget(form.dateHeureDebut) }}
         </div>
         <div class="mb-3">
-            {{ form_row(form.dateLimiteInscription) }}
+            <label for="sortie_dateLimiteInscription" class="form-label required">Date limite d'inscription</label>
+            {{ form_widget(form.dateLimiteInscription) }}
         </div>
         <div class="mb-3">
             <div class="row justify-content-around">
                 <div class="col">
-                    {{ form_label(form.duree) }}
+                    <label for="sortie_duree" class="form-label required">Durée</label>
                     {{ form_widget(form.duree) }}
                 </div>
                 <div class="col">
-                    {{ form_label(form.nbInscriptionsMax) }}
+                    <label for="sortie_nbInscriptionsMax" class="form-label required">Nombre de places</label>
                     {{ form_widget(form.nbInscriptionsMax) }}
                 </div>
             </div>
         </div>
         <div class="mb-3">
-            {{ form_row(form.infoSortie) }}
+            <label for="sortie_infoSortie" class="form-label required">Description et infos</label>
+            {{ form_widget(form.infoSortie) }}
         </div>
     </div>
     <div class="col-5">
         <div class="mb-3">
-            {{ form_row(form.campus) }}
+            <label for="sortie_campus" class="form-label required">Campus</label>
+            {{ form_widget(form.campus) }}
         </div>
         <div class="mb-3">
             <label class="form-label required" for="sortie_lieu">Lieu</label>
@@ -45,7 +50,8 @@
             </div>
         </div>
         <div class="mb-3">
-            {{ form_row(form.rue) }}
+            <label for="sortie_rue" class="form-label required">Rue</label>
+            {{ form_widget(form.rue) }}
         </div>
         <div class="mb-3">
             <div class="mb-3">
@@ -57,11 +63,11 @@
         <div class="mb-3">
             <div class="row justify-content-around">
                 <div class="col">
-                    {{ form_label(form.latitude) }}
+                    <label for="sortie_latitude" class="form-label required">Latitude</label>
                     {{ form_widget(form.latitude) }}
                 </div>
                 <div class="col">
-                    {{ form_label(form.longitude) }}
+                    <label for="sortie_longitude" class="form-label required">Longitude</label>
                     {{ form_widget(form.longitude) }}
                 </div>
             </div>
@@ -77,6 +83,7 @@
             <div class="bouton">
                 {{ form_widget(form.publier) }}
             </div>
+            {{ form_end(form) }}
             <div class="bouton">
                 {{ include('sortie/_delete_form.html.twig') }}
             </div>
@@ -86,4 +93,3 @@
         </div>
     </div>
 </div>
-{{ form_end(form) }}

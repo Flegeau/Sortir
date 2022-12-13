@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Lieu;
 use App\Entity\Ville;
+use App\Repository\VilleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -38,6 +39,10 @@ class LieuType extends AbstractType
                 'label' => 'Ville',
                 'choice_label' => 'nom',
                 'choice_value' => 'id',
+                'query_builder' => function(VilleRepository $v) {
+                    return $v->createQueryBuilder('v')
+                        ->orderBy('v.nom', 'asc');
+                },
                 'required' => true)
             )
             ->add('enregistrer', SubmitType::class, array(

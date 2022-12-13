@@ -13,7 +13,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
-use App\Service\ControleSortie;
+use App\Service\SortieService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,22 +23,32 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/sortie')]
 class SortieController extends AbstractController
 {
-    private const MESSAGE_CREATION = 'La sortie a été créée';
-    private const MESSAGE_PUBLICATION = 'La sortie a été publiée';
-    private const MESSAGE_MODIFICATION = 'La sortie a été modifiée';
-    private const MESSAGE_SUPPRESSION = 'La sortie a été supprimée';
-
-    private ControleSortie $service;
-    public function __construct(ControleSortie $service)
+    private SortieRepository $sortieRepository;
+    private SortieService $service;
+    public function __construct(SortieRepository $sortieRepository, SortieService $service)
     {
+        $this->sortieRepository = $sortieRepository;
         $this->service = $service;
     }
 
+    #[Route('/', name: 'app_sortie_index', methods: ['GET'])]
+    public function index(): Response {
+        return $this->render('sortie/index.html.twig', [
+            'sorties' => $this->sortieRepository->findAll(),
+        ]);
+    }
+
     #[Route('/nouvelle', name: 'app_sortie_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, SortieRepository $sortieRepository,
-                        ParticipantRepository $participantRepository, CampusRepository $campusRepository,
-                        LieuRepository $lieuRepository, EtatRepository $etatRepository): Response
+    public function new(Request $request, ParticipantRepository $participantRepository,
+                        CampusRepository $campusRepository, LieuRepository $lieuRepository,
+                        EtatRepository $etatRepository): Response
     {
+        /*
+        if (!$this->getUser()) {
+            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
+        */
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
@@ -56,12 +66,12 @@ class SortieController extends AbstractController
 
             if ($form->get('enregistrer')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Créée')));
-                $message = self::MESSAGE_CREATION;
+                $message = $this->service::MESSAGE_CREATION;
             } else if ($form->get('publier')->isClicked()) {
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-                $message = self::MESSAGE_PUBLICATION;
+                $message = $this->service::MESSAGE_PUBLICATION;
             }
-            $sortieRepository->save($sortie, true);
+            $this->sortieRepository->save($sortie, true);
 
             $this->addFlash('success', $message);
             return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
@@ -77,7 +87,12 @@ class SortieController extends AbstractController
     public function show(Request $request, Sortie $sortie): Response
     {
         if ($this->isCsrfTokenValid('show'.$sortie->getId(), $request->request->get('_token'))) {
+            if (!$this->getUser()) {
+                $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            }
             if (!$this->service->estAffichable($sortie)) {
+                $this->addFlash('notice', $this->service::MESSAGE_NON_AFFICHABLE);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
         }
@@ -87,7 +102,6 @@ class SortieController extends AbstractController
     }
 
     #[Route('/accueil', name: 'app_sortie_list', methods: ['GET', 'POST'])]
-//    #[ParamConverter('id', class='Sortie', options={'id': 'id'})]
     public function list(Request $request, SortieRepository $sortieRepository, CampusRepository $campusRepository): Response {
         $form = $this->createForm(FilterType::class);
         $form->handleRequest($request);
@@ -110,16 +124,23 @@ class SortieController extends AbstractController
         ]);
     }
 
+
     #[Route('/{id}/modifier', name: 'app_sortie_edit', requirements: ['id'=> '\d+'], methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository, LieuRepository $lieuRepository, EtatRepository $etatRepository): Response {
+    public function edit(Request $request, Sortie $sortie, LieuRepository $lieuRepository,
+                         EtatRepository $etatRepository): Response
+    {
         if ($this->isCsrfTokenValid('edit'.$sortie->getId(), $request->request->get('_token'))) {
+            if (!$this->getUser()) {
+                $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+            }
             $form = $this->createForm(SortieType::class, $sortie);
             $form->handleRequest($request);
             $lieus = $sortie->getLieu()->getVille()->getLieus();
 
-            //Test sur l'id de l'utilisateur à voir
-            if ($sortie->getOrganisateur()->getId() === 0 ||
+            if ($this->getUser() === $sortie->getOrganisateur()->getId() ||
                 !$this->service->estModifiable($sortie)) {
+                $this->addFlash('warning', $this->service::MESSAGE_NON_MODIFIABLE);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
 
@@ -128,13 +149,13 @@ class SortieController extends AbstractController
                 $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
                 $sortie->setLieu($lieu);
                 if ($form->get('enregistrer')->isClicked()) {
-                    $message = self::MESSAGE_MODIFICATION;
+                    $message = $this->service::MESSAGE_MODIFICATION;
                 } else if ($form->get('publier')->isClicked()) {
                     $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-                    $message = self::MESSAGE_PUBLICATION;
+                    $message = $this->service::MESSAGE_PUBLICATION;
                 }
 
-                $sortieRepository->save($sortie, true);
+                $this->sortieRepository->save($sortie, true);
 
                 $this->addFlash('success', $message);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
@@ -147,12 +168,18 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
+    #[Route('/{id}', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
+    public function delete(Request $request, Sortie $sortie): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-            $sortieRepository->remove($sortie, true);
-            $this->addFlash('notice', self::MESSAGE_SUPPRESSION);
+        if (!$this->getUser()) {
+            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
+        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token')) &&
+            $this->service->estModifiable($sortie))
+        {
+            $this->sortieRepository->remove($sortie, true);
+            $this->addFlash('notice', $this->service::MESSAGE_SUPPRESSION);
         }
 
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
