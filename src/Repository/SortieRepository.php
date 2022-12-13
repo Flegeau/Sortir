@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Etat;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,12 +46,13 @@ class SortieRepository extends ServiceEntityRepository
      */
     public function findAllOrder(): array {
         return $this->createQueryBuilder("s")
-            ->select("s", "e", "l", "c", "o")
+            ->select("s", "e", "l", "c", "p", "o")
             ->join("s.etat", "e")
             ->join("s.lieu", "l")
             ->join("s.campus", "c")
             ->join("s.organisateur", "o")
-            ->where("s.etat = e.id AND s.lieu = l.id AND s.campus = c.id AND s.organisateur = o.id AND e.libelle != 'Annulée' AND e.libelle != 'Historisée'")
+            ->leftJoin("s.participants", "p")
+            ->where("e.libelle != 'Annulée' AND e.libelle != 'Historisée'")
             ->orderBy('s.dateLimiteInscription', 'DESC')
             ->getQuery()
             ->getResult(Query::HYDRATE_OBJECT)

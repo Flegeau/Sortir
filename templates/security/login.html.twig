@@ -29,7 +29,7 @@
             <label for="inputEmail"><i class="icon-envelope "></i></label>
             <input type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" class="form-control" autocomplete="email" required autofocus><br><br>
             <label for="inputPassword"><i class="icon-shield"></i></label>
-            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de Passe"required><br><br>
+            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de Passe" required><br><br>
 
             <input type="hidden" name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}">

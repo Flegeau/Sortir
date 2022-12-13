@@ -153,7 +153,7 @@ class AppFixtures extends Fixture
             $sortie->setNom($this->faker->name);
             $sortie->setDateHeureDebut($this->faker->dateTimeBetween("+3 months", "+8 months"));
             $sortie->setDuree($this->faker->randomElement($durees));
-            $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("now", "+2 months"));
+            $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("+1 days", "+2 months"));
             $nbP = $this->faker->numberBetween(2, 20);
             $sortie->setNbInscriptionsMax($nbP);
             $sortie->setInfoSortie($lorem);

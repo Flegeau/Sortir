@@ -21,18 +21,18 @@
                     Accueil
                 </a>
             </li>
-            {% if app.user != null %}
+            {% if app.user %}
             <li class="nav-item m-1">
                 <a href="{{ path('app_participant_show',{id:app.user.id}) }}" class="nav-link" aria-current="page">
                     Mon profil
                 </a>
             </li>
-            {% endif %}
             <li class="nav-item m-1">
                 <a href="{{ path('app_login') }}" class="nav-link" aria-current="page">
                     Se déconnecter
                 </a>
             </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
