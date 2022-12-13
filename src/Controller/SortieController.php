@@ -10,7 +10,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
-use App\Service\ControleSortie;
+use App\Service\SortieService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,28 +20,32 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/sortie')]
 class SortieController extends AbstractController
 {
-    private ControleSortie $service;
-    public function __construct(ControleSortie $service)
+    private SortieRepository $sortieRepository;
+    private SortieService $service;
+    public function __construct(SortieRepository $sortieRepository, SortieService $service)
     {
+        $this->sortieRepository = $sortieRepository;
         $this->service = $service;
     }
 
     #[Route('/', name: 'app_sortie_index', methods: ['GET'])]
-    public function index(SortieRepository $sortieRepository): Response {
+    public function index(): Response {
         return $this->render('sortie/index.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
+            'sorties' => $this->sortieRepository->findAll(),
         ]);
     }
 
     #[Route('/nouvelle', name: 'app_sortie_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, SortieRepository $sortieRepository,
-                        ParticipantRepository $participantRepository, CampusRepository $campusRepository,
-                        LieuRepository $lieuRepository, EtatRepository $etatRepository): Response
+    public function new(Request $request, ParticipantRepository $participantRepository,
+                        CampusRepository $campusRepository, LieuRepository $lieuRepository,
+                        EtatRepository $etatRepository): Response
     {
+        /*
         if (!$this->getUser()) {
             $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
+        */
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
@@ -64,7 +68,7 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
-            $sortieRepository->save($sortie, true);
+            $this->sortieRepository->save($sortie, true);
 
             $this->addFlash('success', $message);
             return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
@@ -135,8 +139,8 @@ class SortieController extends AbstractController
 
 
     #[Route('/{id}/modifier', name: 'app_sortie_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository,
-                         LieuRepository $lieuRepository, EtatRepository $etatRepository): Response
+    public function edit(Request $request, Sortie $sortie, LieuRepository $lieuRepository,
+                         EtatRepository $etatRepository): Response
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
@@ -165,7 +169,7 @@ class SortieController extends AbstractController
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
 
-            $sortieRepository->save($sortie, true);
+            $this->sortieRepository->save($sortie, true);
 
             $this->addFlash('success', $message);
             return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
@@ -178,7 +182,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
+    public function delete(Request $request, Sortie $sortie): Response
     {
         if (!$this->getUser()) {
             $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
@@ -187,7 +191,7 @@ class SortieController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token')) &&
             $this->service->estModifiable($sortie))
         {
-            $sortieRepository->remove($sortie, true);
+            $this->sortieRepository->remove($sortie, true);
             $this->addFlash('notice', $this->service::MESSAGE_SUPPRESSION);
         }
 

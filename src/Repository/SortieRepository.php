@@ -148,6 +148,20 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Sortie[] Returns an array of Sortie objects Where etat is $etat
+     */
+    public function findSelonEtat(string $etat): array {
+        return $this->createQueryBuilder('s')
+            ->join('s.etat', 'e')
+            ->addSelect('e')
+            ->where('s.etat = e.id AND e.libelle = :libelle')
+            ->setParameter('libelle', $etat)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
      * @return Sortie[] Returns an array of Sortie objects Where nom equal $keyword
      */
     public function search($keyword): array {
