@@ -36,11 +36,7 @@ class SortieService {
 
     public function estAffichable(Sortie $sortie): bool
     {
-        if (in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_AFFICHABLES))
-        {
-            return true;
-        }
-        return false;
+        return in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_AFFICHABLES);
     }
 
     public function estModifiable(Sortie $sortie): bool
@@ -67,7 +63,7 @@ class SortieService {
     public function estInscrivable(Sortie $sortie): bool
     {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_OUVERT &&
-            $sortie->getNbInscriptionsMax() > count($sortie->getParticipants()) &&
+            $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() &&
             $sortie->getDateLimiteInscription() > $this->date)
         {
             return true;
@@ -96,13 +92,8 @@ class SortieService {
         return false;
     }
 
-    public function estAnnulable(Sortie $sortie): bool
-    {
-        if (in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_ANNULABLES))
-        {
-            return true;
-        }
-        return false;
+    public function estAnnulable(Sortie $sortie): bool {
+        return in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_ANNULABLES);
     }
 
     public function estTerminable(Sortie $sortie): bool

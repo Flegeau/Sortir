@@ -16,48 +16,39 @@
     <div class="col-8 offset-2">
         <label>Participant: {{ app.user.pseudo }}</label>
     </div>
-    <form method="post">
+    {{ form_start(form) }}
         <div class="row mt-5">
             <div class="col-8 offset-2">
-                <label for="campus">Campus</label><input type="text" name="campus" list="campusname" id="campus">
-                    <datalist id="campusname">
-                        {% for campusName in campus %}
-                            <option value="{{ campusName.nom }}">
-                        {% endfor %}
-                    </datalist>
+                {{ form_row(form.campus) }}
             </div>
             <div class="col-8 offset-2">
-                <label for="sortie">Le nom de la sortie contient:</label><input type="search" name="sortiename" id="sortie">
+                {{ form_row(form.nom) }}
             </div>
             <div class="col-8 offset-2">
-                <label for="datestart">Entre</label><input type="date" name="datestart" id="datestart">
-                <label for="dateend">Et</label><input type="date" name="dateend" id="dateend">
+                {{ form_row(form.dateStart) }}
+                {{ form_row(form.dateEnd) }}
             </div>
         </div>
         <div class="row mt-5">
             <div class="col-8 offset-2">
                 <div>
-                    <input type="checkbox" name="filter[]" value="organisateur" id="organisateur">
-                    <label for="organisateur">Sortie dont  je suis l'organisateur/trice</label>
+                    {{ form_row(form.organisateur) }}
                 </div>
                 <div>
-                    <input type="checkbox" name="filter[]" value="inscrit" id="inscrit">
-                    <label for="inscrit">Sortie auxquelles je suis inscrit/e</label>
+                    {{ form_row(form.inscrit) }}
                 </div>
                 <div>
-                    <input type="checkbox" name="filter[]" value="non-inscrit" id="non-inscrit">
-                    <label for="non-inscrit">Sortie auxquelles je ne suis pas inscrit/e</label>
+                    {{ form_row(form.nonInscrit) }}
                 </div>
                 <div>
-                    <input type="checkbox" name="filter[]" value="passees" id="passees">
-                    <label for="passees">Sortie passées</label>
+                    {{ form_row(form.passees) }}
                 </div>
             </div>
             <div class="col-8 offset-2">
-                <button type="submit">Recherche</button>
+                {{ form_row(form.search) }}
             </div>
         </div>
-    </form>
+    {{ form_end(form) }}
     <div class="col-8 offset-2">
         <a class="text text-info" href="{{ path('app_sortie_new') }}"><button>Créer une Sortie</button></a>
     </div>
@@ -66,6 +57,7 @@
             <table class="table">
                 <thead>
                 <tr>
+                    <th scope="col">#</th>
                     <th scope="col">Nom de la sortie</th>
                     <th scope="col">Date de la sortie</th>
                     <th scope="col">Clôture</th>
@@ -80,8 +72,9 @@
                 {% set libellesShow = ['Ouverte', 'Clôturée', 'Activité en cours', 'Passée'] %}
                 {% set libelles = ['Ouverte', 'Clôturée'] %}
                 {% for sortie in sorties %}
-                    {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) and sortie.etat.libelle != "Historisée" %}
+                    {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) %}
                     <tr>
+                        <td>{{ sortie.id }}</td>
                         <td>{{ sortie.nom }}</td>
                         <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
                         <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
@@ -90,12 +83,12 @@
                         <td>{% if app.user in sortie.participants %}X{% endif %}</td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
-                            {% if is_granted('SHOW_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Afficher</label></a> {% endif %}
-                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Modifier</label></a> {% endif %}
-                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_publish',{id:sortie.id}) }}"><label>Publier</label></a> {% endif %}
-                            {% if is_granted('CANCEL_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_delete',{id:sortie.id}) }}"><label>Annuler</label></a> {% endif %}
-                            {% if is_granted('IN_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_in',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
-                            {% if is_granted('OUT_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_out',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
+                            {% if is_granted('SHOW_SORTIE', sortie) %} {{ include('sortie/_show_form.html.twig') }} {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} {{ include('sortie/_edit_form.html.twig') }} {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} {{ include('sortie/_publish_form.html.twig') }} {% endif %}
+                            {% if is_granted('CANCEL_SORTIE', sortie) %} {{ include('sortie/_cancel_form.html.twig') }} {% endif %}
+                            {% if is_granted('IN_SORTIE', sortie) %} {{ include('sortie/_in_form.html.twig') }} {% endif %}
+                            {% if is_granted('OUT_SORTIE', sortie) %} {{ include('sortie/_out_form.html.twig') }} {% endif %}
                         </td>
                     </tr>
                     {% endif %}

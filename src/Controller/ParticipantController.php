@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\ProfilParticipantType;
 use App\Repository\ParticipantRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,7 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-
+/**
+ *@IsGranted("ROLE_ADMIN")
+ */
 #[Route('/participant')]
 class ParticipantController extends AbstractController
 {
@@ -29,7 +32,7 @@ class ParticipantController extends AbstractController
     public function new(Request $request, ParticipantRepository $participantRepository): Response
     {
         $participant = new Participant();
-        $form = $this->createForm(ProfilParticipantType::class, $participant);
+        $form = $this->createForm(ProfilParticipantType::class, $this->getUser());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -52,11 +55,12 @@ class ParticipantController extends AbstractController
         ]);
     }
 
+
     #[Route('/{id}/edit', name: 'app_participant_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Participant $participant, ParticipantRepository $participantRepository, UserPasswordHasherInterface $participantPasswordHasher,SluggerInterface $slugger): Response
     {
         // $participant
-        $form = $this->createForm(ProfilParticipantType::class, $participant);
+        $form = $this->createForm(ProfilParticipantType::class, $this->getUser());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -95,7 +99,7 @@ class ParticipantController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_participant_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_participant_delete', methods: ['POST'])]
     public function delete(Request $request, Participant $participant, ParticipantRepository $participantRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $participant->getId(), $request->request->get('_token'))) {

@@ -7,6 +7,7 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ProfilParticipantType extends AbstractType
 {
@@ -29,7 +31,7 @@ class ProfilParticipantType extends AbstractType
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['class' => 'password-field']],
-                'required' => true,
+                'required' => false,
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
                 'mapped' => false
@@ -38,6 +40,13 @@ class ProfilParticipantType extends AbstractType
             ->add('prenom',TextType::class)
             ->add('telephone',TextType::class)
             ->add('pseudo',TextType::class)
+           ->add('roles', ChoiceType::class,[
+                       'choices'  => [
+                           'Utilisateur' => 'ROLE_USER',
+                           'Administrateur' => 'ROLE_ADMIN',
+                       ],
+                       'multiple'=>true
+                ])
             ->add('campus', EntityType::class,
                 [
                     'class' => Campus::class,

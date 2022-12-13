@@ -3,44 +3,53 @@
 {% block title %}Participant{% endblock %}
 
 {% block body %}
-    <h1>Participant</h1>
-    <img src="{{ asset('uploads/photos/' ~ participant.photo) }}" alt="profil picture">
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ participant.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ participant.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prenom</th>
-                <td>{{ participant.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Telephone</th>
-                <td>{{ participant.telephone }}</td>
-            </tr>
-            <tr>
-                <th>Mail</th>
-                <td>{{ participant.email }}</td>
-            </tr>
-            <tr>
-                <th>MotDePasse</th>
-                <td>{{ participant.password }}</td>
-            </tr>
-            <tr>
-                <th>Pseudo</th>
-                <td>{{ participant.pseudo }}</td>
-            </tr>
-            <tr>
-                <th>Actif</th>
-                <td>{{ participant.actif ? 'Yes' : 'No' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="display: grid;background-color: #ebebeb;border-radius: 10px;height: 860px;width: 45%;margin: auto;">
+        <div style="text-align: center;margin-left: 2%;border: 2px dashed #3a57af;display: inline-block;border-radius: 7px;margin-top: 2%;width: 95%;height: 813px;">
+            <h1>Participant</h1>
+            <img src="{{ asset('uploads/photos/' ~ participant.photo) }}" alt="profil picture">
+            <div>
 
-    <a href="{{ path('app_participant_edit', {'id': participant.id}) }}">edit</a>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ participant.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <td>{{ participant.nom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Prenom</th>
+                        <td>{{ participant.prenom }}</td>
+                    </tr>
+                    <tr>
+                        <th>Telephone</th>
+                        <td>{{ participant.telephone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mail</th>
+                        <td>{{ participant.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>MotDePasse</th>
+                        <td>{{ participant.password }}</td>
+                    </tr>
+                    <tr>
+                        <th>Pseudo</th>
+                        <td>{{ participant.pseudo }}</td>
+                    </tr>
+                    <tr>
+                        <th>Actif</th>
+                        <td>{{ participant.actif ? 'Yes' : 'No' }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <a href="{{ path('app_sortie_list') }}">Retour</a>
+        </div>
+        </div>
+
 {% endblock %}
