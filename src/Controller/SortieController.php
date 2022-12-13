@@ -50,7 +50,7 @@ class SortieController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $message = '';
-            $organisateur = $participantRepository->find(15);
+            $organisateur = $this->getUser();
             $campus = $campusRepository->find((int)$request->request->get('sortie')['campus']);
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
 
@@ -148,7 +148,7 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
         $lieus = $sortie->getLieu()->getVille()->getLieus();
 
-        if ($this->getUser() === $sortie->getOrganisateur()->getId() ||
+        if ($this->getUser() !== $sortie->getOrganisateur() ||
             !$this->service->estModifiable($sortie))
         {
             $this->addFlash('warning', $this->service::MESSAGE_NON_MODIFIABLE);
