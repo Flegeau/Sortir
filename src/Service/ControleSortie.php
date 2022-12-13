@@ -6,6 +6,14 @@ use App\Entity\Sortie;
 
 class ControleSortie {
 
+    public const MESSAGE_LOGIN = 'Vous devez d\'abord vous connecter';
+    public const MESSAGE_NON_AFFICHABLE = 'La sortie ne peut être affichée';
+    public const MESSAGE_NON_MODIFIABLE = 'La sortie ne peut être modifiée';
+    public const MESSAGE_CREATION = 'La sortie a été créée';
+    public const MESSAGE_PUBLICATION = 'La sortie a été publiée';
+    public const MESSAGE_MODIFICATION = 'La sortie a été modifiée';
+    public const MESSAGE_SUPPRESSION = 'La sortie a été supprimée';
+
     private const ETATS_NON_AFFICHABLES = array('Créée', 'Annulée', 'Historisée');
     private const ETAT_MODIFIABLE = 'Créée';
     private \DateTime $date;
