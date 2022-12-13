@@ -40,12 +40,10 @@ class SortieController extends AbstractController
                         CampusRepository $campusRepository, LieuRepository $lieuRepository,
                         EtatRepository $etatRepository): Response
     {
-        /*
         if (!$this->getUser()) {
             $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
-        */
         $sortie = new Sortie();
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
@@ -62,10 +60,10 @@ class SortieController extends AbstractController
             $sortie->setLieu($lieu);
 
             if ($form->get('enregistrer')->isClicked()) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Créée')));
+                $sortie->setEtat($etatRepository->findSelonLibelle('Créée'));
                 $message = $this->service::MESSAGE_CREATION;
             } else if ($form->get('publier')->isClicked()) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
             $this->sortieRepository->save($sortie, true);
@@ -165,7 +163,7 @@ class SortieController extends AbstractController
                 $message = $this->service::MESSAGE_MODIFICATION;
             }
             else if ($form->get('publier')->isClicked()) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
 
