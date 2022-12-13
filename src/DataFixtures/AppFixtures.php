@@ -99,6 +99,7 @@ class AppFixtures extends Fixture
         $user->setPrenom("Loevan");
         $user->setTelephone("06 17 12 54 35");
         $user->setEmail("loevan.flegeau2021@campus-eni.fr");
+        $user->setRoles(["ROLE_ADMIN"]);
         //var_dump($user->getEmail());
         $user->setPseudo("Loevan F.");
         //var_dump($user->getPseudo());
@@ -117,6 +118,7 @@ class AppFixtures extends Fixture
             $participant->setPrenom($this->faker->firstName);
             $participant->setTelephone($this->faker->phoneNumber);
             $participant->setEmail($this->faker->email);
+            $participant->setRoles(["ROLE_USER"]);
             //var_dump($participant->getEmail());
             $participant->setPseudo($this->faker->userName);
             //var_dump($participant->getPseudo());
@@ -143,26 +145,26 @@ class AppFixtures extends Fixture
         Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. 
         Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.";
 
-        $participants = $this->manager->getRepository(Participant::class)->findAll();
+//        $participants = $this->manager->getRepository(Participant::class)->findAll();
 
-        $sortie = new Sortie();
-        $sortie->setNom($this->faker->name);
-        $sortie->setDateHeureDebut($this->faker->dateTimeBetween("+3 months", "+8 months"));
-        $sortie->setDuree($this->faker->randomElement($durees));
-        $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("+1 days", "+2 months"));
-        $nbP = $this->faker->numberBetween(2, 20);
-        $sortie->setNbInscriptionsMax($nbP);
-        $sortie->setInfoSortie($lorem);
-        $sortie->setEtat($cree);
-        $sortie->setLieu($this->faker->randomElement($lieus));
-        $sortie->setCampus($this->faker->randomElement($campus));
-        $sortie->setOrganisateur($this->manager->getRepository(Participant::class)->find(1));
-        $sortie->addParticipant($this->manager->getRepository(Participant::class)->find(1));
-        for ($ii = 1; $ii < $this->faker->numberBetween(1, $nbP); $ii++)
-        {
-            $sortie->addParticipant($this->faker->randomElement($participants));
-        }
-        $this->manager->persist($sortie);
+//        $sortie = new Sortie();
+//        $sortie->setNom($this->faker->name);
+//        $sortie->setDateHeureDebut($this->faker->dateTimeBetween("+3 months", "+8 months"));
+//        $sortie->setDuree($this->faker->randomElement($durees));
+//        $sortie->setDateLimiteInscription($this->faker->dateTimeBetween("+1 days", "+2 months"));
+//        $nbP = $this->faker->numberBetween(2, 20);
+//        $sortie->setNbInscriptionsMax($nbP);
+//        $sortie->setInfoSortie($lorem);
+//        $sortie->setEtat($cree);
+//        $sortie->setLieu($this->faker->randomElement($lieus));
+//        $sortie->setCampus($this->faker->randomElement($campus));
+//        $sortie->setOrganisateur($this->manager->getRepository(Participant::class)->find(1));
+//        $sortie->addParticipant($this->manager->getRepository(Participant::class)->find(1));
+//        for ($ii = 1; $ii < $this->faker->numberBetween(1, $nbP); $ii++)
+//        {
+//            $sortie->addParticipant($this->faker->randomElement($participants));
+//        }
+//        $this->manager->persist($sortie);
 
         for ($i = 0; $i < $nb; $i++)
         {
