@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Etat;
+use App\Entity\Filter;
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
@@ -60,116 +62,57 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Sortie[] Returns an array of Sortie objects That the user created
+     * @return Sortie[] Returns an array of All Sortie objects in date limite inscription order of date Where filter
      */
-    public function findByCampus($campus): array {
-        return $this->createQueryBuilder('s')
-            ->join('s.campus', 'c')
-            ->addSelect('c') // Entity Campus
-            ->where('s.campus = c.id AND c.nom = :campus')
-            ->setParameter('campus', $campus)
-            ->orderBy('s.dateLimiteInscription', 'DESC')
+    public function findFilterOrder(Filter $filter, Participant $user): array {
+        $query = $this->createQueryBuilder("s")
+            ->select("s", "e", "l", "c", "p", "o")
+            ->join("s.etat", "e")
+            ->join("s.lieu", "l")
+            ->join("s.campus", "c")
+            ->join("s.organisateur", "o")
+            ->leftJoin("s.participants", "p")
+            ->where("e.libelle != 'Annulée' AND e.libelle != 'Historisée'");
+        if ($filter->getCampus() != null) {
+            $query->andWhere('c.nom = :campus')
+                ->setParameter('campus', $filter->getCampus()->getNom());
+        }
+        if ($filter->getNom() != null) {
+            $keyword = $filter->getNom();
+            $query->andWhere('s.nom LIKE :nom')
+                ->setParameter('nom', "%$keyword%");
+        }
+        if ($filter->getDateStart() != null) {
+            $dateStart = $filter->getDateStart()->format('Y-m-d');
+            $dateStart .= " 00:00:00.000000";
+            $query->andWhere('s.dateHeureDebut >= :dateStart')
+                ->setParameter('dateStart', $dateStart);
+        }
+        if ($filter->getDateEnd() != null) {
+            $dateEnd = $filter->getDateStart()->format('Y-m-d');
+            $dateEnd .= " 23:59:59.999999";
+            $query->andWhere('s.dateHeureDebut <= :dateEnd')
+                ->setParameter('dateEnd', $dateEnd);
+        }
+        if ($filter->getOrganisateur()) {
+            $query->andWhere('s.organisateur = :user')
+                ->setParameter('user', $user);
+        }
+        if ($filter->getInscrit()) {
+            $query->andWhere(':user MEMBER OF s.participants')
+                ->setParameter('user', $user);
+        }
+        if ($filter->getNonInscrit()) {
+            $query->andWhere(':user NOT MEMBER OF s.participants')
+                ->setParameter('user', $user);
+        }
+        if ($filter->getPassees()) {
+            $query->andWhere('e.libelle = :libelle')
+            ->setParameter('libelle', "Passée");
+        }
+        return $query->orderBy('s.dateLimiteInscription', 'DESC')
             ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects Where dateHeureDebut is after $date
-     */
-    public function findByDateStart($date): array {
-        $date .= " 00:00:00.000000";
-        return $this->createQueryBuilder('s')
-            ->andWhere("s.dateHeureDebut >= :dateStart")
-            ->setParameter('dateStart', date($date))
-            ->orderBy('s.dateLimiteInscription', 'DESC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects Where dateHeureDebut is before $date
-     */
-    public function findByDateEnd($date): array {
-        $date .= " 23:59:59.999999";
-        return $this->createQueryBuilder('s')
-            ->andWhere("s.dateHeureDebut <= :dateEnd")
-            ->setParameter('dateEnd', date($date))
-            ->orderBy('s.dateLimiteInscription', 'DESC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects That the user created
-     */
-    public function findMySortie($user): array {
-        return $this->createQueryBuilder('s')
-            ->andWhere("s.organisateur = :user")
-            ->setParameter('user', $user)
-            ->orderBy('s.dateLimiteInscription', 'DESC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects Where user is inscrit
-     */
-    public function findInscrit($user): array {
-        return $this->createQueryBuilder('s')
-            ->andWhere(':user MEMBER OF s.participants')
-            ->setParameter('user', $user)
-            ->orderBy('s.dateLimiteInscription', 'DESC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects Where user is not inscrit
-     */
-    public function findNonInscrit($user): array {
-        return $this->createQueryBuilder('s')
-            ->andWhere(':user NOT MEMBER OF s.participants')
-            ->setParameter('user', $user)
-            ->orderBy('s.dateLimiteInscription', 'DESC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects Where etat is Passée
-     */
-    public function findPasse(): array {
-        return $this->createQueryBuilder('s')
-            ->join('s.etat', 'e')
-            ->addSelect('e') // Entity Etat
-            ->where('s.etat = e.id AND e.libelle = :libelle')
-            ->setParameter('libelle', "Passée")
-            ->orderBy('s.dateLimiteInscription', 'DESC')
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of Sortie objects Where nom equal $keyword
-     */
-    public function search($keyword): array {
-        $em = $this->getEntityManager();
-        $dql = "SELECT s FROM App\Entity\Sortie s
-                WHERE s.nom LIKE :nom
-                ORDER BY s.dateLimiteInscription DESC";
-        $stmt = $em->createQuery($dql);
-        $stmt->setParameters(
-            array(
-                ":nom"=>"%$keyword%"
-            ) );
-        return $stmt->getResult();
+            ->getResult(Query::HYDRATE_OBJECT);
     }
 
 //    public function findOneBySomeField($value): ?Sortie

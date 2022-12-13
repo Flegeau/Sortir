@@ -83,12 +83,12 @@
                         <td>{% if app.user in sortie.participants %}X{% endif %}</td>
                         <td>{{ sortie.organisateur.pseudo }}</td>
                         <td>
-                            {% if is_granted('SHOW_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_show',{id:sortie.id}) }}"><label>Afficher</label></a> {% endif %}
-                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_edit',{id:sortie.id}) }}"><label>Modifier</label></a> {% endif %}
-                            {% if is_granted('EDITABLE_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_publish',{id:sortie.id}) }}"><label>Publier</label></a> {% endif %}
-                            {% if is_granted('CANCEL_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_cancel',{id:sortie.id}) }}"><label>Annuler</label></a> {% endif %}
-                            {% if is_granted('IN_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_in',{id:sortie.id}) }}"><label>S'inscrire</label></a> {% endif %}
-                            {% if is_granted('OUT_SORTIE', sortie) %} <a class="text text-info" href="{{ path('app_sortie_out',{id:sortie.id}) }}"><label>Se désister</label></a> {% endif %}
+                            {% if is_granted('SHOW_SORTIE', sortie) %} {{ include('sortie/_show_form.html.twig') }} {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} {{ include('sortie/_edit_form.html.twig') }} {% endif %}
+                            {% if is_granted('EDITABLE_SORTIE', sortie) %} {{ include('sortie/_publish_form.html.twig') }} {% endif %}
+                            {% if is_granted('CANCEL_SORTIE', sortie) %} {{ include('sortie/_cancel_form.html.twig') }} {% endif %}
+                            {% if is_granted('IN_SORTIE', sortie) %} {{ include('sortie/_in_form.html.twig') }} {% endif %}
+                            {% if is_granted('OUT_SORTIE', sortie) %} {{ include('sortie/_out_form.html.twig') }} {% endif %}
                         </td>
                     </tr>
                     {% endif %}

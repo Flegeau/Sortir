@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\FilterType;
 use App\Form\SortieType;
@@ -73,10 +74,12 @@ class SortieController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_sortie_show', requirements: ['id'=> '\d+'], methods: ['GET'])]
-    public function show(Sortie $sortie): Response
+    public function show(Request $request, Sortie $sortie): Response
     {
-        if (!$this->service->estAffichable($sortie)) {
-            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+        if ($this->isCsrfTokenValid('show'.$sortie->getId(), $request->request->get('_token'))) {
+            if (!$this->service->estAffichable($sortie)) {
+                return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+            }
         }
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
@@ -89,41 +92,15 @@ class SortieController extends AbstractController
         $form = $this->createForm(FilterType::class);
         $form->handleRequest($request);
 
-        $sortie = $sortieRepository->findAllOrder();
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Filter $filtre */
             $filtre = $form->getData();
         }
 
         if (isset($filtre)) {
-            if ($filtre->getCampus() != null) {
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByCampus($filtre->getCampus()->getNom()));
-            }
-            if ($filtre->getNom() != null) {
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->search($filtre->getNom()));
-            }
-            if ($filtre->getDateStart() != null) {
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateStart($filtre->getDateStart()->format('Y-m-d')));
-            }
-            if ($filtre->getDateEnd() != null) {
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findByDateEnd($filtre->getDateEnd()->format('Y-m-d')));
-            }
-            if ($filtre->getOrganisateur()) {
-                var_dump($filtre->getOrganisateur());
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findMySortie($this->getUser()));
-            }
-            if ($filtre->getInscrit()) {
-                var_dump($filtre->getInscrit());
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findInscrit($this->getUser()));
-            }
-            if ($filtre->getNonInscrit()) {
-                var_dump($filtre->getNonInscrit());
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findNonInscrit($this->getUser()));
-            }
-            if ($filtre->getPassees()) {
-                var_dump($filtre->getPassees());
-                $sortie = $this->arrayFusion($sortie, $sortieRepository->findPasse());
-            }
+            $sortie = $sortieRepository->findFilterOrder($filtre, $this->getUser());
+        } else {
+            $sortie = $sortieRepository->findAllOrder();
         }
 
         return $this->renderForm('sortie/list.html.twig', [
@@ -135,33 +112,33 @@ class SortieController extends AbstractController
 
     #[Route('/{id}/modifier', name: 'app_sortie_edit', requirements: ['id'=> '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Sortie $sortie, SortieRepository $sortieRepository, LieuRepository $lieuRepository, EtatRepository $etatRepository): Response {
-        $form = $this->createForm(SortieType::class, $sortie);
-        $form->handleRequest($request);
-        $lieus = $sortie->getLieu()->getVille()->getLieus();
+        if ($this->isCsrfTokenValid('edit'.$sortie->getId(), $request->request->get('_token'))) {
+            $form = $this->createForm(SortieType::class, $sortie);
+            $form->handleRequest($request);
+            $lieus = $sortie->getLieu()->getVille()->getLieus();
 
-        //Test sur l'id de l'utilisateur à voir
-        if ($sortie->getOrganisateur()->getId() === 0 ||
-            !$this->service->estModifiable($sortie))
-        {
-            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $message = '';
-            $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
-            $sortie->setLieu($lieu);
-            if ($form->get('enregistrer')->isClicked()) {
-                $message = self::MESSAGE_MODIFICATION;
-            }
-            else if ($form->get('publier')->isClicked()) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-                $message = self::MESSAGE_PUBLICATION;
+            //Test sur l'id de l'utilisateur à voir
+            if ($sortie->getOrganisateur()->getId() === 0 ||
+                !$this->service->estModifiable($sortie)) {
+                return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
 
-            $sortieRepository->save($sortie, true);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $message = '';
+                $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
+                $sortie->setLieu($lieu);
+                if ($form->get('enregistrer')->isClicked()) {
+                    $message = self::MESSAGE_MODIFICATION;
+                } else if ($form->get('publier')->isClicked()) {
+                    $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                    $message = self::MESSAGE_PUBLICATION;
+                }
 
-            $this->addFlash('success', $message);
-            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+                $sortieRepository->save($sortie, true);
+
+                $this->addFlash('success', $message);
+                return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+            }
         }
         return $this->renderForm('sortie/edit.html.twig', [
             'sortie' => $sortie,
@@ -170,7 +147,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
@@ -181,38 +158,50 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'app_sortie_cancel', requirements: ['id'=> '\d+'], methods: ['POST'])]
-    public function cancel(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response {
-//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-//            $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-//        }
+    #[Route('/{id}/cancel', name: 'app_sortie_cancel', requirements: ['id'=> '\d+'], methods: ['POST'])]
+    public function cancel(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
+        if ($this->isCsrfTokenValid('cancel'.$sortie->getId(), $request->request->get('_token'))) {
+            if ($sortie->getEtat()->getLibelle() == "Ouverte" || $sortie->getEtat()->getLibelle() == "Clôturée") {
+                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Annulée')));
+                $sortieRepository->save($sortie, true);
+            }
+        }
 
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'app_sortie_publish', requirements: ['id'=> '\d+'], methods: ['POST'])]
-    public function publish(Request $request, Sortie $sortie, EtatRepository $etatRepository): Response {
-//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-//            $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
-//        }
+    #[Route('/{id}/publish', name: 'app_sortie_publish', requirements: ['id'=> '\d+'], methods: ['POST'])]
+    public function publish(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
+        if ($this->isCsrfTokenValid('publish'.$sortie->getId(), $request->request->get('_token'))) {
+            if ($sortie->getEtat()->getLibelle() == "Créée") {
+                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                $sortieRepository->save($sortie, true);
+            }
+        }
 
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'app_sortie_in', requirements: ['id'=> '\d+'], methods: ['POST'])]
+    #[Route('/{id}/in', name: 'app_sortie_in', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function inscription(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
-//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-//            $sortieRepository->remove($sortie, true);
-//        }
+        if ($this->isCsrfTokenValid('in'.$sortie->getId(), $request->request->get('_token'))) {
+            if ($sortie->getParticipants()->count() < $sortie->getNbInscriptionsMax()) {
+                $sortie->addParticipant($this->getUser());
+                $sortieRepository->save($sortie, true);
+            }
+        }
 
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}', name: 'app_sortie_out', requirements: ['id'=> '\d+'], methods: ['POST'])]
+    #[Route('/{id}/out', name: 'app_sortie_out', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function desitement(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response {
-//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-//            $sortieRepository->remove($sortie, true);
-//        }
+        if ($this->isCsrfTokenValid('out'.$sortie->getId(), $request->request->get('_token'))) {
+            if ($sortie->getParticipants()->contains($this->getUser())) {
+                $sortie->removeParticipant($this->getUser());
+                $sortieRepository->save($sortie, true);
+            }
+        }
 
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
     }
