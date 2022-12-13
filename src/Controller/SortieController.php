@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
-use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\FilterType;
 use App\Form\SortieType;
@@ -29,13 +28,6 @@ class SortieController extends AbstractController
     {
         $this->sortieRepository = $sortieRepository;
         $this->service = $service;
-    }
-
-    #[Route('/', name: 'app_sortie_index', methods: ['GET'])]
-    public function index(): Response {
-        return $this->render('sortie/index.html.twig', [
-            'sorties' => $this->sortieRepository->findAll(),
-        ]);
     }
 
     #[Route('/nouvelle', name: 'app_sortie_new', methods: ['GET', 'POST'])]
@@ -83,11 +75,11 @@ class SortieController extends AbstractController
     #[Route('/{id}', name: 'app_sortie_show', requirements: ['id'=> '\d+'], methods: ['GET'])]
     public function show(Request $request, Sortie $sortie): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid('show'.$sortie->getId(), $request->request->get('_token'))) {
-            if (!$this->getUser()) {
-                $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
-                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
-            }
             if (!$this->service->estAffichable($sortie)) {
                 $this->addFlash('notice', $this->service::MESSAGE_NON_AFFICHABLE);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
@@ -100,6 +92,10 @@ class SortieController extends AbstractController
 
     #[Route('/accueil', name: 'app_sortie_list', methods: ['GET', 'POST'])]
     public function list(Request $request, SortieRepository $sortieRepository, CampusRepository $campusRepository): Response {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
         $form = $this->createForm(FilterType::class);
         $form->handleRequest($request);
 
@@ -126,11 +122,11 @@ class SortieController extends AbstractController
     public function edit(Request $request, Sortie $sortie, LieuRepository $lieuRepository,
                          EtatRepository $etatRepository): Response
     {
+        if (!$this->getUser()) {
+            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid('edit'.$sortie->getId(), $request->request->get('_token'))) {
-            if (!$this->getUser()) {
-                $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
-                return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
-            }
             $form = $this->createForm(SortieType::class, $sortie);
             $form->handleRequest($request);
             $lieus = $sortie->getLieu()->getVille()->getLieus();
