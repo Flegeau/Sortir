@@ -172,7 +172,9 @@ class SortieController extends AbstractController
     #[Route('/{id}', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, SortieRepository $sortieRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token')) &&
+            $this->service->estModifiable($sortie))
+        {
             $sortieRepository->remove($sortie, true);
             $this->addFlash('notice', self::MESSAGE_SUPPRESSION);
         }
