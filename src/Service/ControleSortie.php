@@ -22,11 +22,13 @@ class ControleSortie {
     private const ETAT_ANNULE = 'Annulée';
     private const ETAT_HISTORISE = 'Historisée';
 
-    private const ETATS_NON_AFFICHABLES = array(
-        self::ETAT_CREE,
-        self::ETAT_ANNULE,
-        self::ETAT_HISTORISE
+    private const ETATS_AFFICHABLES = array(
+        self::ETAT_OUVERT,
+        self::ETAT_CLOTURE,
+        self::ETAT_EN_COURS,
+        self::ETAT_PASSE
     );
+
     private const ETATS_ANNULABLES = array(
         self::ETAT_OUVERT,
         self::ETAT_CLOTURE
@@ -45,63 +47,83 @@ class ControleSortie {
 
     public function estAffichable(Sortie $sortie): bool
     {
-        if (in_array($sortie->getEtat()->getLibelle(), self::ETATS_NON_AFFICHABLES))
+        if (in_array($sortie->getEtat()->getLibelle(), self::ETATS_AFFICHABLES))
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function estModifiable(Sortie $sortie): bool
     {
-        if ($sortie->getEtat()->getLibelle() !== self::ETAT_CREE ||
-            $this->date > $sortie->getDateLimiteInscription() ||
-            $this->date > $sortie->getDateHeureDebut())
+        if ($sortie->getEtat()->getLibelle() === self::ETAT_CREE &&
+            $sortie->getDateLimiteInscription() > $this->date &&
+            $sortie->getDateHeureDebut() > $this->date)
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function estInscrivable(Sortie $sortie): bool
     {
-        if ($sortie->getEtat()->getLibelle() !== self::ETAT_OUVERT &&
-            (count($sortie->getParticipants()) === $sortie->getNbInscriptionsMax() ||
-            $this->date > $sortie->getDateLimiteInscription()))
+        if ($sortie->getEtat()->getLibelle() === self::ETAT_OUVERT &&
+            count($sortie->getParticipants()) < $sortie->getNbInscriptionsMax() &&
+            $sortie->getDateLimiteInscription() > $this->date)
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function estDesistable(Sortie $sortie): bool
     {
-        if (!$this->estInscrivable($sortie) ||
-            ($sortie->getEtat()->getLibelle() !== self::ETAT_CLOTURE &&
-            $this->date > $sortie->getDateLimiteInscription()))
+        if ($this->estInscrivable($sortie) ||
+            ($sortie->getEtat()->getLibelle() === self::ETAT_CLOTURE &&
+            $sortie->getDateLimiteInscription() > $this->date))
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public function estEnCours(Sortie $sortie): bool
+    {
+        if ($sortie->getEtat()->getLibelle() === self::ETAT_CLOTURE &&
+            $this->date > $sortie->getDateHeureDebut())
+        {
+            return true;
+        }
+        return false;
     }
 
     public function estAnnulable(Sortie $sortie): bool
     {
-        if (!in_array($sortie->getEtat()->getLibelle(), self::ETATS_ANNULABLES))
+        if (in_array($sortie->getEtat()->getLibelle(), self::ETATS_ANNULABLES))
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public function estTerminable(Sortie $sortie): bool
+    {
+        if ($sortie->getEtat()->getLibelle() === self::ETAT_EN_COURS &&
+            $this->date > $this->obtenirDateFinSortie($sortie))
+        {
+            return true;
+        }
+        return false;
     }
 
     public function estHistorisable(Sortie $sortie): bool
     {
-        if (!in_array($sortie->getEtat()->getLibelle(), self::ETATS_HISTORISABLES) &&
+        if (in_array($sortie->getEtat()->getLibelle(), self::ETATS_HISTORISABLES) &&
             $this->obtenirDateLimiteHistorisation() > $this->obtenirDateFinSortie($sortie))
         {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private function obtenirDateFinSortie(Sortie $sortie): \DateTime
