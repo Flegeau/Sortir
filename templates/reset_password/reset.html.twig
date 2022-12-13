@@ -3,14 +3,36 @@
 {% block title %}Reset your password{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+    <div style="
+    background-color: #ebebeb;
+    border-radius: 10px;
+    text-align: center;
+    display: inline-block;
+    margin-left: 40%;
+    margin-top: 10%;
+    height: 325px;
+">
+        <div style="
+        border: 2px dashed #3a57af;
+        border-radius: 7px;
+        width: 91%;
+        margin-top: 5%;
+        margin-left: 4%;
+        height: 290px;
+        ">
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button style="border-radius: 6px;
-                width: 20%;
+            <h1>Reset your password</h1>
+
+            {{ form_start(resetForm) }}
+            {{ form_row(resetForm.plainPassword) }}<br><br>
+            <button style="border-radius: 6px;
+                width: 40%;
                 background-color: #3a57af;
                 color: #ebebeb;
                 border-color: #ebebeb;">Reset password</button>
-    {{ form_end(resetForm) }}
+            {{ form_end(resetForm) }}
+        </div>
+
+    </div>
+
 {% endblock %}

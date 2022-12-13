@@ -53,6 +53,7 @@ class SortieController extends AbstractController
     #[Route('/accueil', name: 'app_sortie_list', methods: ['GET'])]
     public function list(SortieRepository $sortieRepository, CampusRepository $campusRepository, ParticipantRepository $participantRepository): Response
     {
+
 //        var_dump($sortieRepository->findAll());
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sortieRepository->findAll(),
