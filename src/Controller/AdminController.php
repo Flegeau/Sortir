@@ -22,7 +22,7 @@ class AdminController extends AbstractController
     private string $dataDirectory;
    // private ObjectManager $manager;
 
-    public function __construct( string $dataDirectory)
+    public function __construct(string $dataDirectory)
     {
        $this->dataDirectory = $dataDirectory;
       // $this->manager = $manager;

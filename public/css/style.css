@@ -114,17 +114,26 @@ body {
     color: black;
 }
 
-#groupe-boutons
-{
+#groupe-boutons {
     width:100%;
     text-align: center;
 }
 
-.bouton
-{
+.bouton {
     display: inline-block;
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.scroll {
+    margin:4px;
+    padding:4px;
+    background-color: green;
+    width: 500px;
+    height: 110px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align:justify;
 }
 
 .container-fluid {
