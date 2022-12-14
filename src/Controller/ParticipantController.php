@@ -29,16 +29,25 @@ class ParticipantController extends AbstractController
      *@IsGranted("ROLE_ADMIN")
      */
     #[Route('/new', name: 'app_participant_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ParticipantRepository $participantRepository): Response
+    public function new(Request $request, ParticipantRepository $participantRepository,UserPasswordHasherInterface $participantPasswordHasher): Response
     {
         $participant = new Participant();
-        $form = $this->createForm(ProfilParticipantType::class, $this->getUser());
+        $form = $this->createForm(ProfilParticipantType::class, $participant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $participantRepository->save($participant, true);
+            if ($form->get('plainPassword')->getData() != null) {
 
-            return $this->redirectToRoute('app_participant_index', [], Response::HTTP_SEE_OTHER);
+                $password = $participantPasswordHasher->hashPassword(
+                    $participant,
+                    $form->get('plainPassword')->getData()
+                );
+
+                $participant->setPassword($password);
+            }
+            $participantRepository->save($participant, true);
+            $this->addFlash("Info","Votre utilisateur ont bien été ajouté");
+            return $this->redirectToRoute('app_participant_show', ['id'=>$participant->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('participant/new.html.twig', [

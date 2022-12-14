@@ -22,7 +22,7 @@ class AdminController extends AbstractController
     private string $dataDirectory;
    // private ObjectManager $manager;
 
-    public function __construct( string $dataDirectory)
+    public function __construct(string $dataDirectory)
     {
        $this->dataDirectory = $dataDirectory;
       // $this->manager = $manager;
@@ -87,6 +87,7 @@ class AdminController extends AbstractController
                         $participantRepository->save($participant, true);
                         $row++;
                     }
+
                     fclose($handle);
                 }
             } catch (FileException $e) {
@@ -95,7 +96,8 @@ class AdminController extends AbstractController
             }
         }
        // dd("fin");
-        return $this->redirectToRoute("app_login");
+        $this->addFlash("Info","Vos utilisateurs ont bien été ajoutés");
+        return $this->redirectToRoute("app_admin");
     }
 
     /*private function generateRandomString($length = 10) {
