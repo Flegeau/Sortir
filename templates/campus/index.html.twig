@@ -3,28 +3,30 @@
 {% block body %}
 <h1 class="text-center mt-3">Gérer les campus</h1>
 <div class="container mt-5">
-    <div class="tableFixHead">
-        <table>
-            <thead>
+    {% if campuses|length > 0 %}
+        <div class="tableFixHead">
+            <table>
+                <thead>
                 <tr>
-                    <th>Campus</th>
-                    <th style="max-width: 25px;">Actions</th>
+                    <th class="text-start">Campus</th>
+                    <th class="text-center" style="max-width: 25px;">Modifier</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for campus in campuses %}
-                <tr>
-                    <td class="">{{ campus.nom }}</td>
-                    <td class="">
-                        <a id="modifier_campus" href="#">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                    </td>
-                </tr>
+                    <tr>
+                        <td class="text-start">{{ campus.nom }}</td>
+                        <td class="text-center">
+                            {{ include('campus/edit.html.twig') }}
+                        </td>
+                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Aucun campus dans la base de données.</p>
+    {% endif %}
     <div class="mt-5">
         {{ include('campus/new.html.twig') }}
     </div>

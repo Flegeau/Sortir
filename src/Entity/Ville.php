@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
@@ -16,9 +17,23 @@ class Ville
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le nom doit dépasser {{ limit }} caractères',
+        maxMessage: 'Le nom ne peut dépasser {{ limit }} caractères'
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 5,
+        max: 10,
+        minMessage: 'Le code postal doit dépasser {{ limit }} caractères',
+        maxMessage: 'Le code postal ne peut dépasser {{ limit }} caractères'
+    )]
     private ?string $codePostal = null;
 
     #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class, orphanRemoval: true)]

@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_campus_edit', {'id': campus.id}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ campus.id) }}">
+    <button class="btn">
+        <i class="fa-solid fa-pen-to-square"></i>
+    </button>
+</form>
