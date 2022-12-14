@@ -1,3 +1,0 @@
-nom;prenom;telephone;mail
-"luigi";"mario";"06060606060";"luigi@bros.com"
-"mario";"mario";"07070700700";"mario@bros.com"
