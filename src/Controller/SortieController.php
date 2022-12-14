@@ -184,8 +184,12 @@ class SortieController extends AbstractController
     public function cancel(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
         if ($this->isCsrfTokenValid('cancel'.$sortie->getId(), $request->request->get('_token'))) {
             if ($this->service->estAnnulable($sortie)) {
-                $sortie->setEtat($etatRepository->findSelonLibelle('Annulée'));
-                $sortieRepository->save($sortie, true);
+                if ($request->request->get('motif') != null) {
+                    $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Annulée')));
+                    $sortie->setMotif($request->request->get('motif'));
+                    $sortieRepository->save($sortie, true);
+                    $this->addFlash('notice', $this->service::MESSAGE_ANNULATION);
+                }
             } else {
                 $this->addFlash('danger', $this->service::MESSAGE_NON_ANNULABLE);
             }
@@ -200,6 +204,7 @@ class SortieController extends AbstractController
             if ($this->service->estModifiable($sortie)) {
                 $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
                 $sortieRepository->save($sortie, true);
+                $this->addFlash('notice', $this->service::MESSAGE_PUBLICATION);
             } else {
                 $this->addFlash('danger', $this->service::MESSAGE_NON_PUBLIABLE);
             }
