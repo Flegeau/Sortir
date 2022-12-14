@@ -1,6 +1,3 @@
-{% set sorties = sorties %}
-{% set campus = campus  %}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Sortie{% endblock %}
@@ -10,14 +7,16 @@
     {% if(is_granted("ROLE_ADMIN")) %}
     <a href="{{ path('app_admin')}}"><i class="fa-sharp fa-solid fa-user-secret fa-2xl"></i> Admin</a>
     {% endif %}
+    <div class="top-right">
+        <div>
+            <label>Date du jour: {{ "now"|date("d/m/Y") }}</label>
+        </div>
+        <div>
+            <label>Participant: {{ app.user.pseudo }}</label>
+        </div>
+    </div>
     <div class="row text-center mt-5">
         <h3>Filtrer les sorties</h3>
-    </div>
-    <div class="col-8 offset-2">
-        <label>Date du jour: {{ "now"|date("d/m/Y") }}</label>
-    </div>
-    <div class="col-8 offset-2">
-        <label>Participant: {{ app.user.pseudo }}</label>
     </div>
     {{ form_start(form) }}
         <div class="row mt-5">
@@ -55,25 +54,23 @@
     <div class="col-8 offset-2">
         <a class="text text-info" href="{{ path('app_sortie_new') }}"><button>Créer une Sortie</button></a>
     </div>
-    <div class="row mt-5 scroll">
-        <div class="col-6 offset-3">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nom de la sortie</th>
-                    <th scope="col">Date de la sortie</th>
-                    <th scope="col">Clôture</th>
-                    <th scope="col">inscrits/places</th>
-                    <th scope="col">Etat</th>
-                    <th scope="col">Inscrit</th>
-                    <th scope="col">Organisateur</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for sortie in sorties %}
-                    {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) %}
+    <div class="row mt-5 offset-1 scroll">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Nom de la sortie</th>
+                <th scope="col">Date de la sortie</th>
+                <th scope="col">Clôture</th>
+                <th scope="col">inscrits/places</th>
+                <th scope="col">Etat</th>
+                <th scope="col">Inscrit</th>
+                <th scope="col">Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sortie in sorties %}
+                {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) %}
                     <tr>
                         <td>{{ sortie.nom }}</td>
                         <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
@@ -91,11 +88,10 @@
                             {% if is_granted('OUT_SORTIE', sortie) %} {{ include('sortie/_out_form.html.twig') }} {% endif %}
                         </td>
                     </tr>
-                    {% endif %}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
