@@ -23,14 +23,11 @@ class SortieController extends AbstractController
 {
     private SortieService $service;
     private SortieRepository $sortieRepository;
-    private EtatRepository $etatRepository;
 
-    public function __construct(SortieService $service, SortieRepository $sortieRepository,
-                                EtatRepository $etatRepository)
+    public function __construct(SortieService $service, SortieRepository $sortieRepository)
     {
         $this->service = $service;
         $this->sortieRepository = $sortieRepository;
-        $this->etatRepository = $etatRepository;
     }
 
     #[Route('/nouvelle', name: 'app_sortie_new', methods: ['GET', 'POST'])]
@@ -97,7 +94,6 @@ class SortieController extends AbstractController
             $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
-        $this->controlerEtatsSorties();
         $form = $this->createForm(FilterType::class);
         $form->handleRequest($request);
 
@@ -272,31 +268,6 @@ class SortieController extends AbstractController
         $lieu = $lieuRepository->find((int)$id);
         $jsonContent = $serializer->serialize($lieu, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
-    }
-
-    private function controlerEtatsSorties(): void {
-        foreach ($this->service->obtenirListeEtatsControlables() as $key => $value) {
-            foreach ($this->sortieRepository->findParEtat($value) as $sortie) {
-                if ($key === 0 && $this->service->estCloturable($sortie)) {
-                    $sortie->setEtat(
-                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
-                    );
-                } elseif ($key === 1 && $this->service->estEnCours($sortie)) {
-                    $sortie->setEtat(
-                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
-                    );
-                } elseif ($key === 2 && $this->service->estTerminable($sortie)) {
-                    $sortie->setEtat(
-                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
-                    );
-                } elseif (($key === 3 || $key === 4) && $this->service->estHistorisable($sortie)) {
-                    $sortie->setEtat(
-                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
-                    );
-                }
-                $this->sortieRepository->save($sortie, true);
-            }
-        }
     }
 
     public function arrayFusion($array1, $array2): array {

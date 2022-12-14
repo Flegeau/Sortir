@@ -46,19 +46,6 @@ class SortieRepository extends ServiceEntityRepository
     /**
      * @return Sortie[] Returns an array of All Sortie objects in date limite inscription order of date
      */
-    public function findParEtat(string $etat): array {
-        return $this->createQueryBuilder("s")
-            ->join("s.etat", "e")
-            ->andWhere('e.libelle = :libelle')
-            ->setParameter('libelle', $etat)
-            ->getQuery()
-            ->getResult(Query::HYDRATE_OBJECT)
-            ;
-    }
-
-    /**
-     * @return Sortie[] Returns an array of All Sortie objects in date limite inscription order of date
-     */
     public function findAllOrder(): array {
         return $this->createQueryBuilder("s")
             ->select("s", "e", "l", "c", "p", "o")
