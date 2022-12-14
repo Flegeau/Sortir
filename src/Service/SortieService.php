@@ -7,12 +7,17 @@ use App\Entity\Sortie;
 class SortieService {
 
     public const MESSAGE_LOGIN = 'Vous devez d\'abord vous connecter';
-    public const MESSAGE_NON_AFFICHABLE = 'La sortie ne peut être affichée';
-    public const MESSAGE_NON_MODIFIABLE = 'La sortie ne peut être modifiée';
     public const MESSAGE_CREATION = 'La sortie a été créée';
     public const MESSAGE_PUBLICATION = 'La sortie a été publiée';
     public const MESSAGE_MODIFICATION = 'La sortie a été modifiée';
     public const MESSAGE_SUPPRESSION = 'La sortie a été supprimée';
+
+    public const MESSAGE_NON_AFFICHABLE = 'La sortie ne peut être affichée';
+    public const MESSAGE_NON_MODIFIABLE = 'La sortie ne peut être modifiée';
+    public const MESSAGE_NON_ANNULABLE = 'La sortie ne peut être annulée';
+    public const MESSAGE_NON_PUBLIABLE = 'La sortie ne peut être publiée';
+    public const MESSAGE_NON_DESISTABLE = 'Vous ne pouvez plus vous désister de la sortie';
+    public const MESSAGE_NON_INSCRIVABLE = 'Vous ne pouvez plus vous inscrire à la sortie';
 
     private EtatService $service;
     private \DateTime $date;
