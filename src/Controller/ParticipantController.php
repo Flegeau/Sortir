@@ -46,7 +46,7 @@ class ParticipantController extends AbstractController
                 $participant->setPassword($password);
             }
             $participantRepository->save($participant, true);
-            $this->addFlash("Info","Votre utilisateur ont bien été ajouté");
+            $this->addFlash("Info","Votre utilisateur a bien été ajouté");
             return $this->redirectToRoute('app_participant_show', ['id'=>$participant->getId()], Response::HTTP_SEE_OTHER);
         }
 
