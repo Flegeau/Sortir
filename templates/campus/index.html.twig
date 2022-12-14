@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %}Campus{% endblock %}
+{% block body %}
+<h1 class="text-center mt-3">Gérer les campus</h1>
+<div class="container mt-5">
+    <div class="tableFixHead">
+        <table>
+            <thead>
+                <tr>
+                    <th>Campus</th>
+                    <th style="max-width: 25px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campus in campuses %}
+                <tr>
+                    <td class="">{{ campus.nom }}</td>
+                    <td class="">
+                        <a id="modifier_campus" href="#">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-5">
+        {{ include('campus/new.html.twig') }}
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+    $(document).on('click', '#modifier_campus', function (e){
+        afficherModifierCampus(e);
+    })
+    function afficherModifierCampus(e) {
+        e.preventDefault();
+        console.log('modifier');
+    }
+</script>
+{% endblock %}
