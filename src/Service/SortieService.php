@@ -17,14 +17,12 @@ class SortieService {
     private EtatService $service;
     private \DateTime $date;
 
-    public function __construct(EtatService $service)
-    {
+    public function __construct(EtatService $service) {
         $this->service = $service;
         $this->date = new \DateTime();
     }
 
-    public function obtenirListeEtatsControles(): array
-    {
+    public function obtenirListeEtatsControlables(): array {
         return array(
             $this->service::ETAT_OUVERT,
             $this->service::ETAT_CLOTURE,
@@ -34,13 +32,20 @@ class SortieService {
         );
     }
 
-    public function estAffichable(Sortie $sortie): bool
-    {
+    public function obtenirNouvelEtat(int $key): string {
+        return match ($key) {
+            0 => $this->service::ETAT_CLOTURE,
+            1 => $this->service::ETAT_EN_COURS,
+            2 => $this->service::ETAT_PASSE,
+            default => $this->service::ETAT_HISTORISE,
+        };
+    }
+
+    public function estAffichable(Sortie $sortie): bool {
         return in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_AFFICHABLES);
     }
 
-    public function estModifiable(Sortie $sortie): bool
-    {
+    public function estModifiable(Sortie $sortie): bool {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_CREE &&
             $sortie->getDateLimiteInscription() > $this->date &&
             $sortie->getDateHeureDebut() > $this->date)
@@ -50,8 +55,7 @@ class SortieService {
         return false;
     }
 
-    public function estCloturable(Sortie $sortie): bool
-    {
+    public function estCloturable(Sortie $sortie): bool {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_OUVERT &&
             $this->date > $sortie->getDateLimiteInscription())
         {
@@ -60,8 +64,7 @@ class SortieService {
         return false;
     }
 
-    public function estInscrivable(Sortie $sortie): bool
-    {
+    public function estInscrivable(Sortie $sortie): bool {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_OUVERT &&
             $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() &&
             $sortie->getDateLimiteInscription() > $this->date)
@@ -71,8 +74,7 @@ class SortieService {
         return false;
     }
 
-    public function estDesistable(Sortie $sortie): bool
-    {
+    public function estDesistable(Sortie $sortie): bool {
         if ($this->estInscrivable($sortie) ||
             ($sortie->getEtat()->getLibelle() === $this->service::ETAT_CLOTURE &&
             $sortie->getDateLimiteInscription() > $this->date))
@@ -82,8 +84,7 @@ class SortieService {
         return false;
     }
 
-    public function estEnCours(Sortie $sortie): bool
-    {
+    public function estEnCours(Sortie $sortie): bool {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_CLOTURE &&
             $this->date > $sortie->getDateHeureDebut())
         {
@@ -96,8 +97,7 @@ class SortieService {
         return in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_ANNULABLES);
     }
 
-    public function estTerminable(Sortie $sortie): bool
-    {
+    public function estTerminable(Sortie $sortie): bool {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_EN_COURS &&
             $this->date > $this->obtenirDateFinSortie($sortie))
         {
@@ -106,23 +106,21 @@ class SortieService {
         return false;
     }
 
-    public function estHistorisable(Sortie $sortie): bool
-    {
+    public function estHistorisable(Sortie $sortie): bool {
         if (in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_HISTORISABLES) &&
             $this->obtenirDateLimiteHistorisation() > $this->obtenirDateFinSortie($sortie))
         {
+
             return true;
         }
         return false;
     }
 
-    private function obtenirDateFinSortie(Sortie $sortie): \DateTime
-    {
+    private function obtenirDateFinSortie(Sortie $sortie): \DateTime {
         return $sortie->getDateHeureDebut()->modify('+'.$sortie->getDuree().' minutes');
     }
 
-    private function obtenirDateLimiteHistorisation(): \DateTime
-    {
+    private function obtenirDateLimiteHistorisation(): \DateTime {
         return $this->date->modify('-1 month');
     }
 
