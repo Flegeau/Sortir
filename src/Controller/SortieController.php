@@ -39,7 +39,7 @@ class SortieController extends AbstractController
                         EtatRepository $etatRepository): Response
     {
         if (!$this->getUser()) {
-            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
         $sortie = new Sortie();
@@ -78,12 +78,12 @@ class SortieController extends AbstractController
     #[Route('/{id}', name: 'app_sortie_show', requirements: ['id'=> '\d+'], methods: ['GET'])]
     public function show(Request $request, Sortie $sortie): Response {
         if (!$this->getUser()) {
-            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
         if ($this->isCsrfTokenValid('show'.$sortie->getId(), $request->request->get('_token'))) {
             if (!$this->service->estAffichable($sortie)) {
-                $this->addFlash('notice', $this->service::MESSAGE_NON_AFFICHABLE);
+                $this->addFlash('info', $this->service::MESSAGE_NON_AFFICHABLE);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
         }
@@ -95,7 +95,7 @@ class SortieController extends AbstractController
     #[Route('/accueil', name: 'app_sortie_list', methods: ['GET', 'POST'])]
     public function list(Request $request, SortieRepository $sortieRepository, CampusRepository $campusRepository): Response {
         if (!$this->getUser()) {
-            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
         $form = $this->createForm(FilterType::class);
@@ -125,7 +125,7 @@ class SortieController extends AbstractController
                          EtatRepository $etatRepository): Response
     {
         if (!$this->getUser()) {
-            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
         if ($this->isCsrfTokenValid('edit'.$sortie->getId(), $request->request->get('_token'))) {
@@ -135,7 +135,7 @@ class SortieController extends AbstractController
 
             if ($this->getUser() != $sortie->getOrganisateur() ||
                 !$this->service->estModifiable($sortie)) {
-                $this->addFlash('warning', $this->service::MESSAGE_NON_MODIFIABLE);
+                $this->addFlash('danger', $this->service::MESSAGE_NON_MODIFIABLE);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
 
@@ -167,14 +167,14 @@ class SortieController extends AbstractController
     #[Route('/{id}/delete', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie): Response {
         if (!$this->getUser()) {
-            $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
+            $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token')) &&
             $this->service->estModifiable($sortie))
         {
             $this->sortieRepository->remove($sortie, true);
-            $this->addFlash('notice', $this->service::MESSAGE_SUPPRESSION);
+            $this->addFlash('info', $this->service::MESSAGE_SUPPRESSION);
         }
 
         return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
@@ -184,8 +184,10 @@ class SortieController extends AbstractController
     public function cancel(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
         if ($this->isCsrfTokenValid('cancel'.$sortie->getId(), $request->request->get('_token'))) {
             if ($this->service->estAnnulable($sortie)) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Annulée')));
+                $sortie->setEtat($etatRepository->findSelonLibelle('Annulée'));
                 $sortieRepository->save($sortie, true);
+            } else {
+                $this->addFlash('danger', $this->service::MESSAGE_NON_ANNULABLE);
             }
         }
 
@@ -196,8 +198,10 @@ class SortieController extends AbstractController
     public function publish(Request $request, Sortie $sortie, SortieRepository $sortieRepository, EtatRepository $etatRepository): Response {
         if ($this->isCsrfTokenValid('publish'.$sortie->getId(), $request->request->get('_token'))) {
             if ($this->service->estModifiable($sortie)) {
-                $sortie->setEtat($etatRepository->findOneBy(array('libelle' => 'Ouverte')));
+                $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
                 $sortieRepository->save($sortie, true);
+            } else {
+                $this->addFlash('danger', $this->service::MESSAGE_NON_PUBLIABLE);
             }
         }
 
@@ -210,6 +214,8 @@ class SortieController extends AbstractController
             if ($this->service->estInscrivable($sortie)) {
                 $sortie->addParticipant($this->getUser());
                 $sortieRepository->save($sortie, true);
+            } else {
+                $this->addFlash('danger', $this->service::MESSAGE_NON_INSCRIVABLE);
             }
         }
 
@@ -222,6 +228,8 @@ class SortieController extends AbstractController
             if ($this->service->estDesistable($sortie)) {
                 $sortie->removeParticipant($this->getUser());
                 $sortieRepository->save($sortie, true);
+            } else {
+                $this->addFlash('danger', $this->service::MESSAGE_NON_DESISTABLE);
             }
         }
 
@@ -239,6 +247,7 @@ class SortieController extends AbstractController
         return new Response($jsonContent);
     }
 
+    //Utilisé par appel Ajax
     #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieus', methods: ['GET'])]
     public function afficherLieusDeLaVille(string $id, Serializer $serializer, VilleRepository $villeRepository): response {
         if ($id == null || $id == 'undefined') {
@@ -249,6 +258,7 @@ class SortieController extends AbstractController
         return new Response($jsonContent);
     }
 
+    //Utilisé par appel Ajax
     #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
     public function afficherLieu(string $id, Serializer $serializer, LieuRepository $lieuRepository): response {
         if ($id == null || $id == 'undefined') {

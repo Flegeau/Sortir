@@ -1,12 +1,16 @@
-{% set sorties = sorties %}
-{% set campus = campus  %}
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Sortie{% endblock %}
 
 {% block body %}
 <div class="accueil-page">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} m-2">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <div class="row text-center mt-5">
         <h3>Filtrer les sorties</h3>
     </div>
