@@ -5,36 +5,43 @@
         <div class="mb-3">
             <label for="sortie_nom" class="form-label required">Nom de la sortie</label>
             {{ form_widget(form.nom) }}
+            {{ form_errors(form.nom) }}
         </div>
         <div class="mb-3">
             <label for="sortie_dateHeureDebut" class="form-label required">Date et heure de la sortie</label>
             {{ form_widget(form.dateHeureDebut) }}
+            {{ form_errors(form.dateHeureDebut) }}
         </div>
         <div class="mb-3">
             <label for="sortie_dateLimiteInscription" class="form-label required">Date limite d'inscription</label>
             {{ form_widget(form.dateLimiteInscription) }}
+            {{ form_errors(form.dateLimiteInscription) }}
         </div>
         <div class="mb-3">
             <div class="row justify-content-around">
                 <div class="col">
                     <label for="sortie_duree" class="form-label required">Durée</label>
                     {{ form_widget(form.duree) }}
+                    {{ form_errors(form.duree) }}
                 </div>
                 <div class="col">
                     <label for="sortie_nbInscriptionsMax" class="form-label required">Nombre de places</label>
                     {{ form_widget(form.nbInscriptionsMax) }}
+                    {{ form_errors(form.nbInscriptionsMax) }}
                 </div>
             </div>
         </div>
         <div class="mb-3">
             <label for="sortie_infoSortie" class="form-label required">Description et infos</label>
             {{ form_widget(form.infoSortie) }}
+            {{ form_errors(form.infoSortie) }}
         </div>
     </div>
     <div class="col-5">
         <div class="mb-3">
             <label for="sortie_campus" class="form-label required">Campus</label>
             {{ form_widget(form.campus) }}
+            {{ form_errors(form.campus) }}
         </div>
         <div class="mb-3">
             <label class="form-label required" for="sortie_lieu">Lieu</label>
