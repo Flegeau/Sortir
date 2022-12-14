@@ -9,7 +9,6 @@ use App\Form\SortieType;
 use App\Repository\CampusRepository;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
-use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use App\Service\SortieService;
@@ -17,22 +16,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\SerializerInterface AS Serializer;
 
 #[Route('/sortie')]
 class SortieController extends AbstractController
 {
-    private SortieRepository $sortieRepository;
     private SortieService $service;
-    public function __construct(SortieRepository $sortieRepository, SortieService $service)
+    private SortieRepository $sortieRepository;
+    private EtatRepository $etatRepository;
+
+    public function __construct(SortieService $service, SortieRepository $sortieRepository,
+                                EtatRepository $etatRepository)
     {
-        $this->sortieRepository = $sortieRepository;
         $this->service = $service;
+        $this->sortieRepository = $sortieRepository;
+        $this->etatRepository = $etatRepository;
+        $this->controlerEtatsSorties();
     }
 
     #[Route('/nouvelle', name: 'app_sortie_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ParticipantRepository $participantRepository,
-                        CampusRepository $campusRepository, LieuRepository $lieuRepository,
+    public function new(Request $request, CampusRepository $campusRepository, LieuRepository $lieuRepository,
                         EtatRepository $etatRepository): Response
     {
         if (!$this->getUser()) {
@@ -73,8 +76,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_sortie_show', requirements: ['id'=> '\d+'], methods: ['GET'])]
-    public function show(Request $request, Sortie $sortie): Response
-    {
+    public function show(Request $request, Sortie $sortie): Response {
         if (!$this->getUser()) {
             $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
@@ -163,8 +165,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_sortie_delete', requirements: ['id'=> '\d+'], methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie): Response
-    {
+    public function delete(Request $request, Sortie $sortie): Response {
         if (!$this->getUser()) {
             $this->addFlash('warning', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
@@ -229,8 +230,7 @@ class SortieController extends AbstractController
 
     //Utilisé par appel Ajax
     #[Route('/sortie_ville/{id}', name: 'app_sortie_ville', methods: ['GET'])]
-    public function afficherVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
-    {
+    public function afficherVille(string $id, Serializer $serializer, VilleRepository $villeRepository): response {
         if ($id == null || $id == 'undefined') {
             return new Response();
         }
@@ -240,8 +240,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie_ville_lieu/{id}', name: 'app_sortie_ville_lieus', methods: ['GET'])]
-    public function afficherLieusDeLaVille(string $id, SerializerInterface $serializer, VilleRepository $villeRepository): response
-    {
+    public function afficherLieusDeLaVille(string $id, Serializer $serializer, VilleRepository $villeRepository): response {
         if ($id == null || $id == 'undefined') {
             return new Response();
         }
@@ -251,14 +250,38 @@ class SortieController extends AbstractController
     }
 
     #[Route('/sortie_lieu/{id}', name: 'app_sortie_lieu', methods: ['GET'])]
-    public function afficherLieu(string $id, SerializerInterface $serializer, LieuRepository $lieuRepository): response
-    {
+    public function afficherLieu(string $id, Serializer $serializer, LieuRepository $lieuRepository): response {
         if ($id == null || $id == 'undefined') {
             return new Response();
         }
         $lieu = $lieuRepository->find((int)$id);
         $jsonContent = $serializer->serialize($lieu, 'json', array('ignored_attributes' => ['ville', 'sorties']));
         return new Response($jsonContent);
+    }
+
+    private function controlerEtatsSorties(): void {
+        foreach ($this->service->obtenirListeEtatsControlables() as $key => $value) {
+            foreach ($this->sortieRepository->findParEtat($value) as $sortie) {
+                if ($key === 0 && $this->service->estCloturable($sortie)) {
+                    $sortie->setEtat(
+                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
+                    );
+                } elseif ($key === 1 && $this->service->estEnCours($sortie)) {
+                    $sortie->setEtat(
+                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
+                    );
+                } elseif ($key === 2 && $this->service->estTerminable($sortie)) {
+                    $sortie->setEtat(
+                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
+                    );
+                } elseif (($key === 3 || $key === 4) && $this->service->estHistorisable($sortie)) {
+                    $sortie->setEtat(
+                        $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
+                    );
+                }
+                $this->sortieRepository->save($sortie, true);
+            }
+        }
     }
 
     public function arrayFusion($array1, $array2): array {
