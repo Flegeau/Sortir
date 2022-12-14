@@ -51,4 +51,8 @@
             {% endif %}
         </ul>
     </div>
+    <div style="display: inline-grid; text-align: right; padding-right: 10px">
+        <label>Date du jour: {{ "now"|date("d/m/Y") }}</label>
+        <label>Participant: {{ app.user.pseudo }}</label>
+    </div>
 </nav>

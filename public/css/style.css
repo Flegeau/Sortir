@@ -149,8 +149,9 @@ td {
 }
 
 .top-right {
-    position: fixed;
+    display: block;
     top:65px;
+    margin-right: -5px;
     right: 10px;
     text-align: right;
 }

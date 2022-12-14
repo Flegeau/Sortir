@@ -48,7 +48,12 @@ class SortieRepository extends ServiceEntityRepository
      */
     public function findParEtat(string $etat): array {
         return $this->createQueryBuilder("s")
+            ->select("s", "e", "l", "c", "p", "o")
             ->join("s.etat", "e")
+            ->join("s.lieu", "l")
+            ->join("s.campus", "c")
+            ->join("s.organisateur", "o")
+            ->leftJoin("s.participants", "p")
             ->andWhere('e.libelle = :libelle')
             ->setParameter('libelle', $etat)
             ->getQuery()

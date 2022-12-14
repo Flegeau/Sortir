@@ -75,7 +75,7 @@ class AppFixtures extends Fixture
 
     public function ajouterLieus(int $nb): void
     {
-        $villes = $this->manager->getRepository(Ville::class)->findAll();
+        $villes = $this->manager->getRepository(Ville::class)->findAllBetter();
 
         for ($i = 0; $i < $nb; $i++)
         {
@@ -92,7 +92,7 @@ class AppFixtures extends Fixture
 
     public function ajouterParticipants(int $nb): void
     {
-        $campus = $this->manager->getRepository(Campus::class)->findAll();
+        $campus = $this->manager->getRepository(Campus::class)->findAllBetter();
 
         $user = new Participant();
         $user->setNom("Flegeau");
@@ -138,7 +138,7 @@ class AppFixtures extends Fixture
         $etats = $this->manager->getRepository(Etat::class)->findAll();
         $cree = $this->manager->getRepository(Etat::class)->find(1);
         $lieus = $this->manager->getRepository(Lieu::class)->findAll();
-        $campus = $this->manager->getRepository(Campus::class)->findAll();
+        $campus = $this->manager->getRepository(Campus::class)->findAllBetter();
         $durees = array(60, 120, 180, 240, 300, 360);
         $lorem = "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. 
         Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. 
