@@ -18,7 +18,7 @@
     border-radius: 7px;
     margin-top: -35%;
     width: 90%;
-    height: 349px;
+    height: 450px;
 ">
 
         <form method="post" class="register-form" style="text-align: center;">
@@ -34,18 +34,29 @@
 
             <h1>Connexion</h1><br>
 
-            <label for="inputEmail"><i class="icon-envelope "></i></label>
-            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" class="form-control" autocomplete="email" required autofocus><br><br>
-            <label for="inputPassword"><i class="icon-shield"></i></label>
-            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de Passe" required><br><br>
+            <div style="position: relative;" class="form-login-control" >
+                <label style="    display: inline-block;
+    position: absolute;
+    left: 10px;
+    top: 7px;" for="inputEmail"><i class="icon-envelope "></i></label>
+                <input style ="padding-left: 35px;" type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" class="form-control" autocomplete="email" required autofocus><br><br>
+            </div>
+
+            <div style="position: relative;" class="form-login-control" >
+                <label style = "display: inline-block;
+    position: absolute;
+    left: 10px;
+    top: 7px;" for="inputPassword"><i class="icon-shield"></i></label>
+                <input style ="padding-left: 35px;" type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" placeholder="Mot de Passe" required><br><br>
+            </div>
 
             <input type="hidden" name="_csrf_token"
                    value="{{ csrf_token('authenticate') }}">
                 <label>
                     <input type="checkbox" name="_remember_me" style="
                            margin-left: -4%;"> Remember me
-                </label><br><br>
-                <a href="{{path('app_forgot_password_request')}}" >Forget password</a><br><br><br>
+                </label><br>
+                <a href="{{path('app_forgot_password_request')}}" >Forget password</a><br><br>
             <button class="btn btn-lg btn-primary" type="submit" style="border-radius: 6px;
     width: 40%;
     background-color: #3a57af;

@@ -3,8 +3,8 @@
 {% block title %}Participant{% endblock %}
 
 {% block body %}
-    <div style="display: grid;background-color: #ebebeb;border-radius: 10px;height: 860px;width: 45%;margin: auto;">
-        <div style="text-align: center;margin-left: 2%;border: 2px dashed #3a57af;display: inline-block;border-radius: 7px;margin-top: 2%;width: 95%;height: 813px;">
+    <div style="display: grid;background-color: #ebebeb;border-radius: 10px;height: 950px;width: 45%;margin: auto;">
+        <div style="text-align: center;margin-left: 2%;border: 2px dashed #3a57af;display: inline-block;border-radius: 7px;margin-top: 1%;width: 95%;height: 910px;">
             <h1>Participant</h1>
             <img src="{{ asset('uploads/photos/' ~ participant.photo) }}" alt="profil picture">
             <div>
@@ -30,10 +30,6 @@
                     <tr>
                         <th>Mail</th>
                         <td>{{ participant.email }}</td>
-                    </tr>
-                    <tr>
-                        <th>MotDePasse</th>
-                        <td>{{ participant.password }}</td>
                     </tr>
                     <tr>
                         <th>Pseudo</th>
