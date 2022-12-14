@@ -11,6 +11,7 @@
         {% endfor %}
     {% endfor %}
 <div class="login-page">
+
     <div style="margin-left: 4%;
     border: 2px dashed #3a57af;
     display: inline-block;
@@ -22,7 +23,7 @@
 
         <form method="post" class="register-form" style="text-align: center;">
             {% if error %}
-                <div class="alert alert-danger">Identifiants Incorrects</div>
+                {{ error.message }}
             {% endif %}
 
             {% if app.user %}
@@ -31,7 +32,7 @@
                 </div>
             {% endif %}
 
-            <h1>Connexion</h1>
+            <h1>Connexion</h1><br>
 
             <label for="inputEmail"><i class="icon-envelope "></i></label>
             <input type="email" value="{{ last_username }}" name="email" id="inputEmail" placeholder="Email" class="form-control" autocomplete="email" required autofocus><br><br>
@@ -44,7 +45,7 @@
                     <input type="checkbox" name="_remember_me" style="
                            margin-left: -4%;"> Remember me
                 </label><br><br>
-                <a href="{{path('app_forgot_password_request')}}" >Forget password</a><br><br>
+                <a href="{{path('app_forgot_password_request')}}" >Forget password</a><br><br><br>
             <button class="btn btn-lg btn-primary" type="submit" style="border-radius: 6px;
     width: 40%;
     background-color: #3a57af;
@@ -53,12 +54,8 @@
 }}">
                 Sign in
             </button><br><br>
-            {% if is_granted("ROLE_ADMIN") %}
-                <a href="{{path('app_admin')}}">Administrateur</a>
-            {% endif %}
         </form>
     </div>
-
 
 </div>
 {% endblock %}

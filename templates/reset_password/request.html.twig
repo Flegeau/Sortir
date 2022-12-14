@@ -12,21 +12,21 @@
     text-align: center;
     display: inline-block;
     margin-left: 35%;
-    margin-top: 10%;
+    margin-top: 8%;
     height: 325px;
-    ">
+    width: 30%;
+">
         <div style="
-                border: 2px dashed #3a57af;
-                /* display: inline-block; */
-                border-radius: 7px;
-                /* min-width: auto; */
-                width: 84%;
-                margin-top: 9%;
-                margin-left: 7%;
-                height: 248px;">
+        border: 2px dashed #3a57af;
+        border-radius: 7px;
+        width: 91%;
+        margin-top: 3%;
+        margin-left: 4%;
+        height: 290px;
+        ">
             <h1>Reset your password</h1>
 
-            {{ form_start(requestForm) }}
+            {{ form_start(requestForm) }}<br>
 
             {{ form_row(requestForm.email) }}
             <div><br>
@@ -34,7 +34,7 @@
                     Enter your email address and we will send you a
                     link to reset your password.
                 </small>
-            </div><br>
+            </div><br><br>
 
             <button style="border-radius: 6px;
                 width: 20%;

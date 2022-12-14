@@ -7,6 +7,9 @@
 
 {% block body %}
 <div class="accueil-page">
+    {% if(is_granted("ROLE_ADMIN")) %}
+    <a href="{{ path('app_admin')}}"><i class="fa-sharp fa-solid fa-user-secret fa-2xl"></i> Admin</a>
+    {% endif %}
     <div class="row text-center mt-5">
         <h3>Filtrer les sorties</h3>
     </div>
@@ -69,12 +72,9 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% set libellesShow = ['Ouverte', 'Clôturée', 'Activité en cours', 'Passée'] %}
-                {% set libelles = ['Ouverte', 'Clôturée'] %}
                 {% for sortie in sorties %}
                     {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) %}
                     <tr>
-                        <td>{{ sortie.id }}</td>
                         <td>{{ sortie.nom }}</td>
                         <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
                         <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>

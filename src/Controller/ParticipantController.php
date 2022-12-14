@@ -14,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-/**
- *@IsGranted("ROLE_ADMIN")
- */
+
 #[Route('/participant')]
 class ParticipantController extends AbstractController
 {
@@ -27,7 +25,9 @@ class ParticipantController extends AbstractController
             'participants' => $participantRepository->findAll(),
         ]);
     }
-
+    /**
+     *@IsGranted("ROLE_ADMIN")
+     */
     #[Route('/new', name: 'app_participant_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ParticipantRepository $participantRepository): Response
     {
@@ -55,6 +55,19 @@ class ParticipantController extends AbstractController
         ]);
     }
 
+    /**
+     *@IsGranted("ROLE_ADMIN")
+     */
+    #[Route('/disable/{id}', name: 'app_participant_disable', methods: ['GET'])]
+    public function desable(Participant $participant,ParticipantRepository $participantRepository): Response
+    {
+        if($this->isGranted("ROLE_ADMIN")){
+            $participant->setActif(false);
+            $participantRepository->save($participant, true);
+        }
+        return $this->redirectToRoute('app_participant_index');
+    }
+
 
     #[Route('/{id}/edit', name: 'app_participant_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Participant $participant, ParticipantRepository $participantRepository, UserPasswordHasherInterface $participantPasswordHasher,SluggerInterface $slugger): Response
@@ -70,7 +83,7 @@ class ParticipantController extends AbstractController
                 $originalFilename = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$photo->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photo->guessExtension();
                 try {
                     $photo->move(
                         $this->getParameter('photos_directory'),
@@ -82,15 +95,17 @@ class ParticipantController extends AbstractController
             }
             $participantRepository->update($participant);
 
+            if ($form->get('plainPassword')->getData() != null) {
             $password = $participantPasswordHasher->hashPassword(
                 $participant,
                 $form->get('plainPassword')->getData()
             );
 
             $participant->setPassword($password);
+        }
             $participantRepository->save($participant, true);
             dump($form);
-            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_participant_show', ['id'=>$participant->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('participant/edit.html.twig', [
@@ -99,6 +114,9 @@ class ParticipantController extends AbstractController
         ]);
     }
 
+    /**
+     *@IsGranted("ROLE_ADMIN")
+     */
     #[Route('/delete/{id}', name: 'app_participant_delete', methods: ['POST'])]
     public function delete(Request $request, Participant $participant, ParticipantRepository $participantRepository): Response
     {

@@ -1,0 +1,3 @@
+nom;prenom;telephone;mail;password;pseudo;actif;roles
+luigi;mario;6060606060;luigi@bros.com;123456;mario28;true;"ROLE_ADMIN;ROLE_USER"
+mario;mario;7070700700;mario@bros.com;123456;mario64;true;ROLE_USER
