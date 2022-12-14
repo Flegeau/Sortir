@@ -31,7 +31,6 @@ class SortieController extends AbstractController
         $this->service = $service;
         $this->sortieRepository = $sortieRepository;
         $this->etatRepository = $etatRepository;
-        $this->controlerEtatsSorties();
     }
 
     #[Route('/nouvelle', name: 'app_sortie_new', methods: ['GET', 'POST'])]
@@ -98,6 +97,7 @@ class SortieController extends AbstractController
             $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
+        $this->controlerEtatsSorties();
         $form = $this->createForm(FilterType::class);
         $form->handleRequest($request);
 

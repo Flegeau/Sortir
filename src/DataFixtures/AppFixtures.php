@@ -31,10 +31,10 @@ class AppFixtures extends Fixture
         $this->manager = $manager;
         $this->ajouterEtats();
         $this->ajouterCampus(10);
-        $this->ajouterVilles(50);
-        $this->ajouterLieus(25);
+        $this->ajouterVilles(25);
+        $this->ajouterLieus(75);
         $this->ajouterParticipants(40);
-        $this->ajouterSorties(200);
+        $this->ajouterSorties(120);
     }
 
     public function ajouterEtats(): void
