@@ -281,6 +281,10 @@ class SortieController extends AbstractController
                     $sortie->setEtat(
                         $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))
                     );
+                } elseif ($key === 1 && $this->service->estOuvert($sortie)) {
+                    $sortie->setEtat(
+                        $this->etatRepository->findOneBy(['libelle'=>'Ouverte'])
+                    );
                 } elseif ($key === 1 && $this->service->estEnCours($sortie)) {
                     $sortie->setEtat(
                         $this->etatRepository->findSelonLibelle($this->service->obtenirNouvelEtat($key))

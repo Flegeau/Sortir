@@ -61,6 +61,16 @@ class SortieService {
         return false;
     }
 
+    public function estOuvert(Sortie $sortie): bool {
+        if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_CLOTURE &&
+            ($this->date > $sortie->getDateLimiteInscription() ||
+                $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count()))
+        {
+            return true;
+        }
+        return false;
+    }
+
     public function estCloturable(Sortie $sortie): bool {
         if ($sortie->getEtat()->getLibelle() === $this->service::ETAT_OUVERT &&
             ($this->date > $sortie->getDateLimiteInscription() ||
