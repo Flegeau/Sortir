@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}Ville{% endblock %}
+{% block body %}
+<h1 class="text-center mt-3">Gérer les villes</h1>
+<div class="container mt-5">
+    {% if villes|length > 0 %}
+        <div class="tableFixHead">
+            <table>
+                <thead>
+                <tr>
+                    <th class="text-start">Ville</th>
+                    <th class="text-center">Code postal</th>
+                    <th class="text-center" style="max-width: 25px;">Modifier</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ville in villes %}
+                    <tr>
+                        <td class="text-start">{{ ville.nom }}</td>
+                        <td class="text-center">{{ ville.codePostal }}</td>
+                        <td class="text-center">
+                            {{ include('ville/edit.html.twig') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Aucune ville dans la base de données.</p>
+    {% endif %}
+    <div class="mt-5">
+        {{ include('ville/new.html.twig') }}
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).on('click', '#modifier_ville', function (e){
+            afficherModifierVille(e);
+        })
+        function afficherModifierVille(e) {
+            e.preventDefault();
+            console.log('modifier');
+        }
+    </script>
+{% endblock %}

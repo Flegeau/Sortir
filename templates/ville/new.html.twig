@@ -1,0 +1,17 @@
+{{ form_start(form) }}
+<div class="mb-4">
+    <div class="mb-3">
+        <label for="ville_nom" class="form-label required">Nouvelle ville</label>
+        {{ form_widget(form.nom) }}
+        {{ form_errors(form.nom) }}
+    </div>
+    <div class="mb-3">
+        <label for="ville_codePostal" class="form-label required">Code postal</label>
+        {{ form_widget(form.codePostal) }}
+        {{ form_errors(form.codePostal) }}
+    </div>
+</div>
+<div class="mb-3">
+    {{ form_widget(form.enregistrer) }}
+</div>
+{{ form_end(form) }}
