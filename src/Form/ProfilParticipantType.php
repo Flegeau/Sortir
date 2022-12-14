@@ -8,6 +8,7 @@ use App\Entity\Participant;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -40,12 +41,17 @@ class ProfilParticipantType extends AbstractType
             ->add('prenom',TextType::class)
             ->add('telephone',TextType::class)
             ->add('pseudo',TextType::class)
+            ->add('actif',CheckboxType::class,[
+                "attr" => [
+                    'checked'=> true
+                ],
+              ])
            ->add('roles', ChoiceType::class,[
                        'choices'  => [
                            'Utilisateur' => 'ROLE_USER',
                            'Administrateur' => 'ROLE_ADMIN',
                        ],
-                       'multiple'=>true
+                       'multiple'=>true,
                 ])
             ->add('campus', EntityType::class,
                 [

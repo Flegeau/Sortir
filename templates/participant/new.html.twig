@@ -3,9 +3,14 @@
 {% block title %}New Participant{% endblock %}
 
 {% block body %}
+    {% for messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <h1>Create new Participant</h1>
 
     {{ include('participant/_form.html.twig') }}
-
-    <a href="{{ path('app_participant_index') }}">back to list</a>
 {% endblock %}

@@ -11,6 +11,7 @@ class SortieService {
     public const MESSAGE_PUBLICATION = 'La sortie a été publiée';
     public const MESSAGE_MODIFICATION = 'La sortie a été modifiée';
     public const MESSAGE_SUPPRESSION = 'La sortie a été supprimée';
+    public const MESSAGE_ANNULATION = 'La sortie a été annulée';
 
     public const MESSAGE_NON_AFFICHABLE = 'La sortie ne peut être affichée';
     public const MESSAGE_NON_MODIFIABLE = 'La sortie ne peut être modifiée';
