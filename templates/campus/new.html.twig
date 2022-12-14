@@ -1,0 +1,10 @@
+{{ form_start(form) }}
+<div class="mb-4">
+    <label for="campus-nom" class="form-label required">Nouveau campus</label>
+    {{ form_widget(form.nom) }}
+    {{ form_errors(form.nom) }}
+</div>
+<div class="mb-3">
+    {{ form_widget(form.enregistrer) }}
+</div>
+{{ form_end(form) }}
