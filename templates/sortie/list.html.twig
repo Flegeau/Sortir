@@ -85,8 +85,8 @@
                         <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>
                         <td>{% if app.user in sortie.participants %}X{% endif %}</td>
-                        <td>{{ sortie.organisateur.pseudo }}</td>
-                        <td>
+                        <td><a class="text text-info" href="{{ path('app_participant_show',{id:sortie.organisateur.id}) }}">{{ sortie.organisateur.pseudo }}</a></td>
+                        <td class="action">
                             {% if is_granted('SHOW_SORTIE', sortie) %} {{ include('sortie/_show_form.html.twig') }} {% endif %}
                             {% if is_granted('EDITABLE_SORTIE', sortie) %} {{ include('sortie/_edit_form.html.twig') }} {% endif %}
                             {% if is_granted('EDITABLE_SORTIE', sortie) %} {{ include('sortie/_publish_form.html.twig') }} {% endif %}

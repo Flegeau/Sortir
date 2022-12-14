@@ -1,8 +1,8 @@
 
-<form method="post" action="{{ path('app_sortie_cancel', {'id': sortie.id}) }}" onsubmit="return annulation()">
+<form style="display: inline" method="post" action="{{ path('app_sortie_cancel', {'id': sortie.id}) }}" onsubmit="return annulation()">
     <input type="hidden" name="motif" id="motif">
     <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ sortie.id) }}">
-    <button class="btn btn-danger"><i class="fa-solid fa-close"></i></button>
+    <a class="btn btn-danger"><i class="fa-solid fa-close"></i></a>
 </form>
 <script>
     function annulation() {
