@@ -25,6 +25,11 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
     public function save(Sortie $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
