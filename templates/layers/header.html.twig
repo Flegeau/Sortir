@@ -28,11 +28,31 @@
                 </a>
             </li>
             <li class="nav-item m-1">
-                <a href="{{ path('app_login') }}" class="nav-link" aria-current="page">
+                <a href="{{ path('app_logout') }}" class="nav-link" aria-current="page">
                     Se déconnecter
                 </a>
             </li>
+            {% if is_granted("ROLE_ADMIN") %}
+                <li class="nav-item dropdown" style="
+    margin-top: 1%;
+">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Administrateur
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ path('app_participant_new') }}">Ajout d'un utilisateur </a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_admin') }}">Import de fichiers </a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_participant_index') }}">Liste des participants</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_campus_index') }}">Campus</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_ville_index') }}">Villes</a></li>
+                    </ul>
+                </li>
+            {% endif %}
             {% endif %}
         </ul>
+    </div>
+    <div style="display: inline-grid; text-align: right; padding-right: 10px">
+        <label>Date du jour: {{ "now"|date("d/m/Y") }}</label>
+        <label>Participant: {{ app.user.pseudo }}</label>
     </div>
 </nav>
