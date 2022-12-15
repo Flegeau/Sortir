@@ -1,4 +1,4 @@
-<form id="form_ville" method="post" action="{{ path('app_ville_edit', {'id': ville.id}) }}">
+<form id="form_ville_{{ ville.id }}" method="post" action="{{ path('app_ville_edit', {'id': ville.id}) }}">
     <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ ville.id) }}">
-    <a href="#" onclick="document.getElementById('form_ville').submit();"><i class="fa-solid fa-pen-to-square"></i></a>
+    <a href="javascript:void(0)" onclick="document.getElementById('form_ville_{{ ville.id }}').submit();"><i class="fa-solid fa-pen-to-square"></i></a>
 </form>

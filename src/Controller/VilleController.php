@@ -44,7 +44,7 @@ class VilleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_ville_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_ville_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Ville $ville, VilleRepository $villeRepository): Response
     {
         if (!$this->getUser()->getRoles()) {
