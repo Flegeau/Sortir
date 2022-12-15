@@ -44,18 +44,6 @@ class EtatRepository extends ServiceEntityRepository
         return $this->findOneBy(array('libelle' => $etat));
     }
 
-    public function findEtatsAControles(): array
-    {
-        return $this->createQueryBuilder("e")
-            ->select("e.id, e.libelle")
-            ->where("e.libelle != 'Créée'")
-            ->orderBy('e.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-
 //    /**
 //     * @return Etat[] Returns an array of Etat objects
 //     */

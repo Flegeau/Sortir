@@ -28,25 +28,6 @@ class SortieService {
         $this->date = new \DateTime();
     }
 
-    public function obtenirListeEtatsControlables(): array {
-        return array(
-            $this->service::ETAT_OUVERT,
-            $this->service::ETAT_CLOTURE,
-            $this->service::ETAT_EN_COURS,
-            $this->service::ETAT_PASSE,
-            $this->service::ETAT_ANNULE
-        );
-    }
-
-    public function obtenirNouvelEtat(int $key): string {
-        return match ($key) {
-            0 => $this->service::ETAT_CLOTURE,
-            1 => $this->service::ETAT_EN_COURS,
-            2 => $this->service::ETAT_PASSE,
-            default => $this->service::ETAT_HISTORISE,
-        };
-    }
-
     public function estAffichable(Sortie $sortie): bool {
         return in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_AFFICHABLES);
     }
@@ -116,7 +97,6 @@ class SortieService {
         if (in_array($sortie->getEtat()->getLibelle(), $this->service::ETATS_HISTORISABLES) &&
             $this->obtenirDateLimiteHistorisation() > $this->obtenirDateFinSortie($sortie))
         {
-
             return true;
         }
         return false;
@@ -127,7 +107,8 @@ class SortieService {
     }
 
     private function obtenirDateLimiteHistorisation(): \DateTime {
-        return $this->date->modify('-1 month');
+        $dateJour = new \DateTime();
+        return $dateJour->modify('-1 month');
     }
 
 }
