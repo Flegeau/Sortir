@@ -76,6 +76,7 @@ class ProfilParticipantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Participant::class,
+            'translation_domain' => false
         ]);
     }
 }

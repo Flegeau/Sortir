@@ -54,8 +54,9 @@ class EtatCommand extends Command {
             } elseif ($this->sortieService->estHistorisable($sortie)) {
                 $sortie->setEtat($this->hist);
             }
-            $this->sortieRepository->save($sortie, true);
+            $this->sortieRepository->save($sortie);
         }
+        $this->sortieRepository->flush();
         return Command::SUCCESS;
     }
 

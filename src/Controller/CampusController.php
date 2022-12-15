@@ -19,7 +19,7 @@ class CampusController extends AbstractController
     #[Route('/', name: 'app_campus_index', methods: ['GET', 'POST'])]
     public function index(Request $request, CampusRepository $campusRepository): Response
     {
-        if (!$this->getUser()->getRoles()) {
+        if (!$this->getUser()) {
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {
@@ -44,10 +44,10 @@ class CampusController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/modifier', name: 'app_campus_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_campus_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Campus $campus, CampusRepository $campusRepository): Response
     {
-        if (!$this->getUser()->getRoles()) {
+        if (!$this->getUser()) {
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {

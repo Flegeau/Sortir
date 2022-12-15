@@ -28,6 +28,7 @@ class CampusType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Campus::class,
+            'translation_domain' => false
         ]);
     }
 }
