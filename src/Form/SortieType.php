@@ -121,7 +121,8 @@ class SortieType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sortie::class,
-            'allow_extra_fields' => true
+            'allow_extra_fields' => true,
+            'translation_domain' => false
         ]);
     }
 }

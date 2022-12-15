@@ -32,6 +32,7 @@ class VilleType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Ville::class,
+            'translation_domain' => false
         ]);
     }
 }
