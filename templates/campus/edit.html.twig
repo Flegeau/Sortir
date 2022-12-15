@@ -1,6 +1,4 @@
-<form method="post" action="{{ path('app_campus_edit', {'id': campus.id}) }}">
+<form id="form_campus" method="post" action="{{ path('app_campus_edit', {'id': campus.id}) }}">
     <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ campus.id) }}">
-    <button class="btn" disabled>
-        <i class="fa-solid fa-pen-to-square"></i>
-    </button>
+    <a href="#" onclick="document.getElementById('form_campus').submit();"><i class="fa-solid fa-pen-to-square"></i></a>
 </form>
