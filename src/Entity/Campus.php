@@ -20,7 +20,7 @@ class Campus
     #[Assert\NotBlank]
     #[Assert\Length(
         min: 3,
-        max: 255,
+        max: 180,
         minMessage: 'Le nom doit dépasser {{ limit }} caractères',
         maxMessage: 'Le nom ne peut dépasser {{ limit }} caractères'
     )]
