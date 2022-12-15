@@ -44,6 +44,24 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Sortie[] Returns an array of All Sortie objects tested
+     */
+    public function findAllControleEtat(): array {
+        return $this->createQueryBuilder("s")
+            ->select("s", "e", "l", "c", "p", "o")
+            ->join("s.etat", "e")
+            ->join("s.lieu", "l")
+            ->join("s.campus", "c")
+            ->join("s.organisateur", "o")
+            ->leftJoin("s.participants", "p")
+            ->where("e.libelle != 'Créée' AND e.libelle != 'Historisée'")
+            ->orderBy('s.id', 'ASC')
+            ->getQuery()
+            ->getResult(Query::HYDRATE_OBJECT)
+            ;
+    }
+
+    /**
      * @return Sortie[] Returns an array of All Sortie objects in date limite inscription order of date
      */
     public function findAllOrder(): array {

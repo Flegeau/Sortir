@@ -44,7 +44,7 @@ class EtatCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        foreach ($this->sortieRepository->findAllOrder() as $sortie) {
+        foreach ($this->sortieRepository->findAllControleEtat() as $sortie) {
             if ($this->sortieService->estCloturable($sortie)) {
                 $sortie->setEtat($this->cloture);
             } elseif ($this->sortieService->estEnCours($sortie)) {
