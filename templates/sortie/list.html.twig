@@ -15,7 +15,7 @@
 
     </div>
     <div class="row text-center mt-5">
-        <h3>Filtrer les sorties</h3>
+        <h1>Filtrer les sorties</h1>
     </div>
     {{ form_start(form) }}
         <div class="row mt-5">
@@ -50,9 +50,6 @@
             </div>
         </div>
     {{ form_end(form) }}
-    <div class="col-8 offset-2">
-        <a class="text text-info" href="{{ path('app_sortie_new') }}"><button>Créer une Sortie</button></a>
-    </div>
     <div class="row mt-5 offset-1 scroll">
         <table class="table">
             <thead>
@@ -93,4 +90,18 @@
         </table>
     </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+    window.onload = () => {
+        let elem = $('#filter_search').parent();
+        elem.attr('class', 'col-sm-10 d-flex justify-content-between');
+        let button = $('<a>', {
+            'class': 'btn btn-primary',
+            'href': '{{ path('app_sortie_new') }}',
+            'role': 'button'
+        }).html('Créer une sortie');
+        elem.append(button);
+    }
+</script>
 {% endblock %}
