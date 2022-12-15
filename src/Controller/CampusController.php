@@ -32,7 +32,7 @@ class CampusController extends AbstractController
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {
-            if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            if (!$this->isGranted('ROLE_ADMIN')) {
                 $this->addFlash('danger', self::MESSAGE_NON_ADMIN);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
@@ -61,7 +61,7 @@ class CampusController extends AbstractController
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {
-            if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            if (!$this->isGranted('ROLE_ADMIN')) {
                 $this->addFlash('danger', self::MESSAGE_NON_ADMIN);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
@@ -87,7 +87,7 @@ class CampusController extends AbstractController
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {
-            if (!in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            if (!$this->isGranted('ROLE_ADMIN')) {
                 $this->addFlash('danger', self::MESSAGE_NON_ADMIN);
                 return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
             }
