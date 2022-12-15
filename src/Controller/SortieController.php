@@ -110,7 +110,7 @@ class SortieController extends AbstractController
 
         return $this->renderForm('sortie/list.html.twig', [
             'sorties' => $sortie,
-            'campus' => $campusRepository->findAll(),
+            'campus' => $campusRepository->findAllBetter(),
             'form' => $form,
         ]);
     }

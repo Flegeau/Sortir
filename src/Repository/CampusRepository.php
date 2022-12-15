@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Campus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,20 @@ class CampusRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+
+    /**
+     * @return Campus[] Returns an array of All Campus objects
+     */
+    public function findAllBetter(): array {
+        return $this->createQueryBuilder("c")
+            ->select("c", "s", "p")
+            ->leftJoin("c.sortie", "s")
+            ->leftJoin("c.participants", "p")
+            ->getQuery()
+            ->getResult(Query::HYDRATE_OBJECT)
+            ;
     }
 
 //    /**
