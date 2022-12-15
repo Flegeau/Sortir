@@ -19,7 +19,7 @@ class VilleController extends AbstractController
     #[Route('/', name: 'app_ville_index', methods: ['GET', 'POST'])]
     public function index(Request $request, VilleRepository $villeRepository): Response
     {
-        if (!$this->getUser()->getRoles()) {
+        if (!$this->getUser()) {
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {
@@ -47,7 +47,7 @@ class VilleController extends AbstractController
     #[Route('/{id}', name: 'app_ville_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Ville $ville, VilleRepository $villeRepository): Response
     {
-        if (!$this->getUser()->getRoles()) {
+        if (!$this->getUser()) {
             $this->addFlash('danger', self::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         } else {
