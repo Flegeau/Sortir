@@ -115,7 +115,6 @@ class SortieController extends AbstractController
         ]);
     }
 
-
     #[Route('/{id}/modifier', name: 'app_sortie_edit', requirements: ['id'=> '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Sortie $sortie, LieuRepository $lieuRepository,
                          EtatRepository $etatRepository): Response

@@ -77,8 +77,7 @@ class ParticipantController extends AbstractController
         return $this->redirectToRoute('app_participant_index');
     }
 
-
-    #[Route('/{id}/edit', name: 'app_participant_edit', requirements: ['id'=> '\d+'], methods: ['GET', 'POST'])]
+    #[Route('/{id}/modifier', name: 'app_participant_edit', requirements: ['id'=> '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, Participant $participant, ParticipantRepository $participantRepository, UserPasswordHasherInterface $participantPasswordHasher,SluggerInterface $slugger): Response
     {
         // $participant
