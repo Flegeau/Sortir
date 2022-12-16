@@ -3,9 +3,9 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    {% for messages in app.flashes %}
+    {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="flash-notice">
+            <div class="alert alert-{{ label }} m-2">
                 {{ message }}
             </div>
         {% endfor %}
