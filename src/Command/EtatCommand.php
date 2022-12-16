@@ -27,6 +27,7 @@ class EtatCommand extends Command {
     private SortieRepository $sortieRepository;
     private EtatRepository $etatRepository;
 
+    private Etat $ouvert;
     private Etat $cloture;
     private Etat $encours;
     private Etat $passe;
@@ -45,7 +46,9 @@ class EtatCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
         foreach ($this->sortieRepository->findAllControleEtat() as $sortie) {
-            if ($this->sortieService->estCloturable($sortie)) {
+            if ($this->sortieService->estOuvert($sortie)) {
+                $sortie->setEtat($this->ouvert);
+            } elseif ($this->sortieService->estCloturable($sortie)) {
                 $sortie->setEtat($this->cloture);
             } elseif ($this->sortieService->estEnCours($sortie)) {
                 $sortie->setEtat($this->encours);
@@ -61,6 +64,7 @@ class EtatCommand extends Command {
     }
 
     private function obtenirEtats(): void {
+        $this->ouvert = $this->obtenirEtat($this->etatService::ETAT_OUVERT);
         $this->cloture = $this->obtenirEtat($this->etatService::ETAT_CLOTURE);
         $this->encours = $this->obtenirEtat($this->etatService::ETAT_EN_COURS);
         $this->passe = $this->obtenirEtat($this->etatService::ETAT_PASSE);
