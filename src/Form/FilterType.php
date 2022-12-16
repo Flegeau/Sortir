@@ -44,15 +44,15 @@ class FilterType extends AbstractType
                     'required' => false)
             )
             ->add('organisateur', CheckboxType::class, array(
-                'label' => 'Sortie dont je suis l\'organisateur/trice',
+                'label' => 'Sorties dont je suis l\'organisateur/trice',
                 'required' => false)
             )
             ->add('inscrit', CheckboxType::class, array(
-                'label' => 'Sortie auxquelles je suis inscrit/e',
+                'label' => 'Sorties auxquelles je suis inscrit/e',
                 'required' => false)
             )
             ->add('nonInscrit', CheckboxType::class, array(
-                'label' => 'Sortie auxquelles je ne suis pas inscrit/e',
+                'label' => 'Sorties auxquelles je ne suis pas inscrit/e',
                 'required' => false)
             )
             ->add('passees', CheckboxType::class, array(

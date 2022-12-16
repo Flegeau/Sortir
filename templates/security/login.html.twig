@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Se connecter{% endblock %}
 
 {% block body %}
     {% for label, messages in app.flashes %}
@@ -54,16 +54,16 @@
                    value="{{ csrf_token('authenticate') }}">
                 <label>
                     <input type="checkbox" name="_remember_me" style="
-                           margin-left: -4%;"> Remember me
+                           margin-left: -4%;"> Se souvenir de moi
                 </label><br>
-                <a href="{{path('app_forgot_password_request')}}" >Forget password</a><br><br>
+                <a href="{{path('app_forgot_password_request')}}" >Mot de passe oublié</a><br><br>
             <button class="btn btn-lg btn-primary" type="submit" style="border-radius: 6px;
     width: 40%;
     background-color: #3a57af;
     color: #ebebeb;
     border-color: #ebebeb;
 }}">
-                Sign in
+                Se connecter
             </button><br><br>
         </form>
     </div>

@@ -30,7 +30,7 @@ class ProfilParticipantType extends AbstractType
             ->add('plainPassword', RepeatedType::class,
             [
                 'type' => PasswordType::class,
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Le mot de passe doit être identique',
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => false,
                 'first_options'  => ['label' => 'Password'],
@@ -65,7 +65,7 @@ class ProfilParticipantType extends AbstractType
                 'constraints' => [
                     new File([
                         'mimeTypes' => ['image/jpeg', 'image/png'],
-                        'mimeTypesMessage' => 'Please upload a valid image format',
+                        'mimeTypesMessage' => 'Le format de l\'image est invalide',
                     ])
                 ]
 
