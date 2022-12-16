@@ -69,7 +69,7 @@
                 {% if (sortie.etat.libelle != "Créée" or sortie.organisateur.pseudo == app.user.pseudo) %}
                     <tr>
                         <td>{{ sortie.nom }}</td>
-                        <td>{{ sortie.dateHeureDebut|date("d/m/y h") }}h{{ sortie.dateHeureDebut|date("i") }}</td>
+                        <td>{{ sortie.dateHeureDebut|date('d/m/Y \\à H:i') }}</td>
                         <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
                         <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
                         <td>{{ sortie.etat.libelle }}</td>

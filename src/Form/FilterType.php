@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Campus;
 use App\Entity\Filter;
+use App\Repository\CampusRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -21,6 +22,10 @@ class FilterType extends AbstractType
             ->add('campus', EntityType::class, array(
                     'class' => Campus::class,
                     'required' => false,
+                    'query_builder' => function(CampusRepository $c) {
+                        return $c->createQueryBuilder('c')
+                            ->orderBy('c.nom', 'asc');
+                    },
                     'label' => 'Campus : ',
                     'choice_label' => 'nom')
             )
