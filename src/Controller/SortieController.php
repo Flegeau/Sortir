@@ -123,16 +123,15 @@ class SortieController extends AbstractController
             $this->addFlash('danger', $this->service::MESSAGE_LOGIN);
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
         }
-        if ($this->isCsrfTokenValid('edit'.$sortie->getId(), $request->request->get('_token'))) {
-            $form = $this->createForm(SortieType::class, $sortie);
-            $form->handleRequest($request);
-            $lieus = $sortie->getLieu()->getVille()->getLieus();
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+        $lieus = $sortie->getLieu()->getVille()->getLieus();
 
-            if ($this->getUser() != $sortie->getOrganisateur() ||
-                !$this->service->estModifiable($sortie)) {
-                $this->addFlash('danger', $this->service::MESSAGE_NON_MODIFIABLE);
-                return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
-            }
+        if ($this->getUser() != $sortie->getOrganisateur() ||
+            !$this->service->estModifiable($sortie)) {
+            $this->addFlash('danger', $this->service::MESSAGE_NON_MODIFIABLE);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $message = '';
@@ -147,12 +146,12 @@ class SortieController extends AbstractController
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
 
-                $this->sortieRepository->save($sortie, true);
+            $this->sortieRepository->save($sortie, true);
 
-                $this->addFlash('success', $message);
-                return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
-            }
+            $this->addFlash('success', $message);
+            return $this->redirectToRoute('app_sortie_list', [], Response::HTTP_SEE_OTHER);
         }
+
         return $this->renderForm('sortie/edit.html.twig', [
             'sortie' => $sortie,
             'lieus' => $lieus,
