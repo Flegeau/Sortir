@@ -131,7 +131,8 @@ body {
     margin-bottom: 50px;
     background-color: white;
     width: 80%;
-    height: 600px;
+    height: auto;
+    max-height: 50vh;
     overflow-x: hidden;
     overflow-y: auto;
 }
