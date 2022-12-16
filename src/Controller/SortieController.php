@@ -48,7 +48,6 @@ class SortieController extends AbstractController
             $lieu = $lieuRepository->find((int)$request->request->get('sortie')['lieu']);
 
             $sortie->setOrganisateur($this->getUser());
-            $sortie->addParticipant($this->getUser());
             $sortie->setCampus($campus);
             $sortie->setLieu($lieu);
 
@@ -56,6 +55,7 @@ class SortieController extends AbstractController
                 $sortie->setEtat($etatRepository->findSelonLibelle('Créée'));
                 $message = $this->service::MESSAGE_CREATION;
             } else if ($form->get('publier')->isClicked()) {
+                $sortie->addParticipant($this->getUser());
                 $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
@@ -143,6 +143,7 @@ class SortieController extends AbstractController
             }
             else if ($form->get('publier')->isClicked()) {
                 $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
+                $sortie->addParticipant($this->getUser());
                 $message = $this->service::MESSAGE_PUBLICATION;
             }
 
@@ -198,6 +199,7 @@ class SortieController extends AbstractController
         if ($this->isCsrfTokenValid('publish'.$sortie->getId(), $request->request->get('_token'))) {
             if ($this->service->estModifiable($sortie)) {
                 $sortie->setEtat($etatRepository->findSelonLibelle('Ouverte'));
+                $sortie->addParticipant($this->getUser());
                 $sortieRepository->save($sortie, true);
                 $this->addFlash('notice', $this->service::MESSAGE_PUBLICATION);
             } else {
