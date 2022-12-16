@@ -1,4 +1,4 @@
 <form style="display: inline" method="post" action="{{ path('app_sortie_publish', {'id': sortie.id}) }}" onsubmit="return confirm('Confirmez-vous la publication de la sortie ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ sortie.id) }}">
-    <button class="btn btn-info"><i class="fa-solid fa-share-square"></i></button>
+    <button class="btn btn-info" title="Publier"><i class="fa-solid fa-share-square"></i></button>
 </form>

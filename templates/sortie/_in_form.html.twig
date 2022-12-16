@@ -1,4 +1,4 @@
 <form style="display: inline" method="post" action="{{ path('app_sortie_in', {'id': sortie.id}) }}">
     <input type="hidden" name="_token" value="{{ csrf_token('in' ~ sortie.id) }}">
-    <button class="btn btn-outline-primary"><i class="fa-solid fa-sign-in"></i></button>
+    <button class="btn btn-outline-primary" title="S'inscrire"><i class="fa-solid fa-sign-in"></i></button>
 </form>
